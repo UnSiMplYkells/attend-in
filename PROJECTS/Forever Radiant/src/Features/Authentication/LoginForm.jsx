@@ -14,7 +14,6 @@ const Container = styled.div`
     max-width: 80%;
   }
 `
-
 const Header = styled.p`
   text-transform: uppercase;
   text-align: center;
@@ -29,7 +28,6 @@ const Header = styled.p`
     font-size: 2em; 
   }
 `;
-
 const StyledButton = styled(Button)`
   width: 100%;
   margin: 30px 0;
@@ -40,7 +38,6 @@ const StyledButton = styled(Button)`
     opacity: 1;
   }
 `
-
 export default function LoginForm() {
   const { register, handleSubmit, reset } = useForm()
   const { login, isLoading } = useLogin()
@@ -48,7 +45,8 @@ export default function LoginForm() {
   function onSubmitForm(data){
     const { email, password } = data;
     if(!email || !password) return
-    login({ email, password }, 
+    login(
+      { email, password }, 
       {
         onSettled: () => {
           reset()

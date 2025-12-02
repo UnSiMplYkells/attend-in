@@ -26,7 +26,6 @@ const Li = styled.li`
   &:hover{
     transform: scale(1.02);
   }
-  
 
   & svg{
     width: 25px;

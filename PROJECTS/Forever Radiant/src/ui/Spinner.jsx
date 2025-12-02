@@ -3,8 +3,8 @@ import styled from 'styled-components';
 const LoaderOverlay = styled.div`
   position: absolute;
   inset: 0;
-  background-color: rgba(148, 163, 184, 0.2); /* Equivalent to bg-slate-200/20 */
-  backdrop-filter: blur(8px); /* Equivalent to backdrop-blur-sm */
+  background-color: rgba(148, 163, 184, 0.2); 
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
