@@ -1,6 +1,6 @@
 "use client"
-import PixelBlast from "@/app/admin/components/ui/PixelBlast";
-import ThemeToggle from "@/app/admin/components/ThemeToggle";
+import PixelBlast from "@/app/components/ui/PixelBlast";
+import ThemeToggle from "@/app/components/ThemeToggle";
 import AuthForm from "../AuthForm";
 import { usePathname } from "next/navigation";
 

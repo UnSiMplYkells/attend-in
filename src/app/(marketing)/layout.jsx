@@ -1,6 +1,6 @@
 "use client"
-import ThemeToggle from '../admin/components/ThemeToggle';
-import Beams from '../admin/components/ui/Beams';
+import ThemeToggle from '../components/ThemeToggle';
+import Beams from '../components/ui/Beams';
 import Footer from './components/Footer'
 import Navigation from './components/Navigation'
 import { usePathname } from "next/navigation";

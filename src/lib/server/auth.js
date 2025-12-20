@@ -15,7 +15,7 @@ export async function signUpNewUser({ email, password, matricNo, deviceFingerpri
   });
 
   if (authError){throw new Error(authError.message)}
-  if (!authData.user){throw new Error("User was not created. Please try again.")}
+  if (!authData.user){throw new Error("User was not created. Please try again later.")}
 
   const authUserId = authData.user.id;
 
@@ -30,7 +30,7 @@ export async function signUpNewUser({ email, password, matricNo, deviceFingerpri
   if (!registryResult){throw new Error("Student record not found")}
 
   //fills users table with correct data both directly form the signup form and from the registry table
-  const { data, error: newStudentError } = await supabase
+  const { error: newStudentError } = await supabase
     .from("users")
     .insert([
       {
@@ -73,6 +73,7 @@ export async function signInWithMatric({ matricNo, password }) {
   return data;
 }
 
+// for admin
 export async function signInWithEmail({email, password}) {
   const supabase = await createClient();
 

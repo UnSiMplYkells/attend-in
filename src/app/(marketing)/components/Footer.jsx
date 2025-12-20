@@ -1,4 +1,4 @@
-import Button from "@/app/admin/components/ui/Button";
+import Button from "@/app/components/ui/Button";
 import Link from "next/link";
 
 export default function Footer() {

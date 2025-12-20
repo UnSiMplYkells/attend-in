@@ -23,6 +23,15 @@ html, body {
   transition: background-color 0.3s, color 0.3s;
 }
 
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* 
 .bg-theme { background-color: var(--bg);}
 .text-theme { color: var(--fg);}

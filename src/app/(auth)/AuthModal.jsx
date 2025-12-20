@@ -1,10 +1,10 @@
 "use client"
 import { useState } from "react";
-import ModalPortal from "../admin/components/ModalPortal";
-import Modal from "../admin/components/ui/Modal";
+import ModalPortal from "../components/ModalPortal";
+import Modal from "../components/ui/Modal";
 import { GrUserAdmin } from "react-icons/gr";
 import { RxPerson } from "react-icons/rx";
-import Button from "../admin/components/ui/Button";
+import Button from "../components/ui/Button";
 
 export default function AuthModal({ open, setOpen, onConfirmStudent, onConfirmClassRep }) {
   const [contact, setContact] = useState("");

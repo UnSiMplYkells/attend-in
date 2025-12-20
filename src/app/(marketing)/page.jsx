@@ -1,9 +1,9 @@
 "use client";
-import QrGenerator from "../admin/components/QrGenerator";
-import QrScanner from "../admin/components/QrScanner";
+import QrGenerator from "../components/QrGenerator";
+import QrScanner from "../components/QrScanner";
 import Navigation from "./components/Navigation";
-import Beams from "../admin/components/ui/Beams";
-import Button from "../admin/components/ui/Button";
+import Beams from "../components/ui/Beams";
+import Button from "../components/ui/Button";
 import Link from "next/link";
 import Image from "next/image";
 

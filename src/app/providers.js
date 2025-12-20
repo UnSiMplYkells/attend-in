@@ -21,7 +21,7 @@ export default function Providers({ children }) {
       <Toaster
         position="top-center"
         toastOptions={{
-          duration: 5000,
+          duration: 4000,
           style: { background: "#333", color: "#fff" },
         }}
       />

@@ -12,7 +12,7 @@ export default function Modal({ open, onClose, children }) {
         onClick={onClose}
       >
         <div
-          className="bg-[#0c2241]/80 rounded shadow-lg p-6 max-w-lg sm:w-full w-[90%] flex gap-5"
+          className="bg-[#0c2241]/80 px-5 py-4 max-w-lg sm:w-full w-[90%] flex gap-5"
           onClick={(e) => e.stopPropagation()}
         >
           {children}

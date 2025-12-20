@@ -4,10 +4,11 @@ import { useState } from "react";
 import { useAdminLogin, useLogin, useSignup } from "@/hooks/query/useAuth";
 import { checkUserExists } from "@/lib/server/students";
 import AuthModal from "./AuthModal";
-import Button from "@/app/admin/components/ui/Button";
-import Loader from "@/app/admin/components/ui/Loader";
+import Button from "@/app/components/ui/Button";
+import Loader from "@/app/components/ui/Loader";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import { createDeviceFingerprint } from "@/lib/deviceFingerprint";
 
 export default function AuthForm({ pathname }) {
   const supabase = createClient();
@@ -209,10 +210,34 @@ export default function AuthForm({ pathname }) {
           }
 
           //check device
-          const dbKey = await verifyDevice(matricNo);
+          let dbKey = await verifyDevice(matricNo);
+
+          //if no device bound
+          if (!dbKey || dbKey.length < 5) {
+            console.log("Binding new device...");
+
+            const { uuid, deviceId } = await createDeviceFingerprint();
+
+            //update device id
+            const { error: updateDeviceError } = await supabase
+              .from("users")
+              .update({ bound_device_id: deviceId })
+              .eq("matric_number", matricNo);
+
+            if (updateDeviceError) throw new Error("Unable to change device");
+
+            //update the local storage too
+            localStorage.setItem("device_id", deviceId);
+            localStorage.setItem("device_uuid", uuid);
+
+            //updates dbkey to the newly created record
+            dbKey = deviceId;
+          }
+
           const localKey = localStorage.getItem("device_id");
 
           const isDevice = dbKey === localKey;
+
           if (!isDevice) {
             toast.error("Device unavailable!");
             return;

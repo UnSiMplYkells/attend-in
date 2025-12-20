@@ -64,7 +64,7 @@ export default function Sidebar() {
           </button>
         </div>
 
-        <nav className="flex flex-col pt-3 gap-2 flex-1 mt-4 sm:mt-0">
+        <nav className="flex flex-col pt-3 md:ml-3 gap-2 flex-1 mt-4 sm:mt-0">
           {links.map((link) => (
             <Link
               key={link.label}

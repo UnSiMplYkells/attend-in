@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Twirl as Hamburger } from "hamburger-react";
-import Button from "@/app/admin/components/ui/Button";
+import Button from "@/app/components/ui/Button";
 
 export default function Navigation() {
   const pathName = usePathname()
