@@ -8,6 +8,16 @@ import highlightText from "@/app/helper/searchHighlight";
 import Button from "@/app/components/ui/Button";
 import EditDeviceModalModal from "../components/EditDeviceModal";
 
+
+  //make it so that each device change can only be allowed every 7 days.
+  //if it changes today, it can only change that user in the next 7 days again.
+  //add changed date in column supabase db, and check it against date.now, if >7, then allow, if not, deny with a toast
+
+
+  //fully implement filter feature so it can get students based on their class
+  //make both full list downloadable, and also list of filtered class downloadable
+
+
 export default function StudentsPage() {
   const { user, isAuthenticated, isLoading: isUserLoading } = useUser();
   const classRepDept = user?.profile?.department;
