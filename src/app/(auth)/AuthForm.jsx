@@ -239,7 +239,7 @@ export default function AuthForm({ pathname }) {
           const isDevice = dbKey === localKey;
 
           if (!isDevice) {
-            toast.error("Device unavailable!");
+            toast.error("Device mismatch. This account is bound to another device!");
             return;
           }
 
