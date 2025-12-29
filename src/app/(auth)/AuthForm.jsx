@@ -232,6 +232,8 @@ export default function AuthForm({ pathname }) {
 
             //updates dbkey to the newly created record
             dbKey = deviceId;
+
+            toast.success("New device bound to account.");
           }
 
           const localKey = localStorage.getItem("device_id");
