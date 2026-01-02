@@ -8,7 +8,7 @@ export default async function ClassRepAdminLayout({ children }) {
       <div className="flex-none h-full border-r border-white/5 bg-black/40">
         <SidebarII />
       </div>
-      <div className="flex-1 h-full overflow-y-auto relative">{children}</div>
+      <div className="flex-1 h-full overflow-y-auto relative no-scrollbar">{children}</div>
     </div>
   );
 }
