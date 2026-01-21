@@ -20,13 +20,21 @@ export default function ScanPage() {
   const { user, isUserLoading } = useUser();
   const { data: location, loading: isGeoLoading } = useGeo();
   const { data: currentClass } = useGetCurrentClass();
-  const { sessionByQr: fromServer } = useAttendanceSessionByQr(scanResult);
+  const { sessionByQr, isSessionByQrLoading } = useAttendanceSessionByQr(scanResult);
+
+  console.log("Session by QR:", sessionByQr);
 
   //fetches existing records only if we have a valid session from the QR
-  const { data: existingRecord, isGetAtdRecordLoading } = useGetAtdRecord(fromServer?.id);
-  const { setAtdRecord } = useSetAtdRecord();
+  const {
+    data: existingRecord,
+    isGetAtdRecordLoading,
+    isFetched: isRecordFetched,
+  } = useGetAtdRecord(user && sessionByQr ? sessionByQr?.id : null, user?.id);
+  console.log("Existing Record:", existingRecord);
 
-  const distance = getDistanceInMeters(
+  const { setAtdRecord, issetAtdRecordLoading } = useSetAtdRecord();
+
+  const distanceFrmHall = getDistanceInMeters(
     location?.latitude,
     location?.longitude,
     currentClass?.latitude ?? null,
@@ -37,17 +45,29 @@ export default function ScanPage() {
   const todaysDate = new Date().toISOString().split("T")[0];
 
   useEffect(() => {
+    //strictly checks if existingRecord is undefined, to know if it hasnt been fetched yet/loading
+    if (sessionByQr && !isRecordFetched) {
+      return;
+    }
+
     //guard clauses to prevent premature execution
-    if (!fromServer || !user || isGetAtdRecordLoading || hasAttempted) {
+    if (
+      !sessionByQr ||
+      !user ||
+      isGetAtdRecordLoading ||
+      hasAttempted ||
+      issetAtdRecordLoading
+    ) {
       return;
     }
 
     //validation Logic
     const errorMsg = validateAttendance({
-      session: fromServer,
+      session: sessionByQr,
       today: todaysDate,
       now: nowNow,
       existingRecord,
+      distanceFrmHall,
     });
 
     if (errorMsg) {
@@ -57,31 +77,32 @@ export default function ScanPage() {
     }
 
     setAtdRecord({
-      sessionId: fromServer.id,
+      sessionId: sessionByQr.id,
       userId: user.id,
-      distanceFrmHall: distance,
+      distanceFrmHall,
     });
 
     toast.success("Attendance Marked Successfully!");
     setHasAttempted(true);
   }, [
-    fromServer,
+    sessionByQr,
     user,
     existingRecord,
+    isRecordFetched,
     isGetAtdRecordLoading,
-    distance,
+    distanceFrmHall,
     setAtdRecord,
     hasAttempted,
     todaysDate,
     nowNow,
   ]);
 
-  const handleScan = (result) => {
+  function handleScan(result) {
     console.log("QR Scanned in Page:", result);
     setScanResult(result);
   };
 
-  const handleReset = () => {
+  function handleReset() {
     setScanResult(null);
     setHasAttempted(false);
   };
@@ -122,6 +143,7 @@ export default function ScanPage() {
                   <div className="h-16 w-16 bg-white/10 rounded-full mb-4"></div>
                   <div className="h-4 w-32 bg-white/10 rounded mb-2"></div>
                   <p className="text-sm text-gray-500">Verifying session...</p>
+                  <p className="text-sm text-gray-500">Do not close or refresh this page</p>
                 </div>
               ) : hasAttempted ? (
                 <>
@@ -148,7 +170,7 @@ export default function ScanPage() {
             <div className="relative aspect-square w-full bg-black/50 overflow-hidden rounded-xl">
               <QrScanner onScan={handleScan} />
               <div className="absolute inset-0 pointer-events-none border-30 border-black/50"></div>
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border-2 border-indigo-500 rounded-lg shadow-[0_0_20px_rgba(99,102,241,0.5)]"></div>
+              <div className="absolute z-[-1] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border-2 border-indigo-500 rounded-lg shadow-[0_0_20px_rgba(99,102,241,0.5)]"></div>
             </div>
           )}
         </div>
