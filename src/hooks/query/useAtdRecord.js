@@ -1,17 +1,21 @@
 "use client"
 import { useUser } from "./useUser";
 import { getAtdRecord, setAtdRecord as setAtdRecordApi } from "@/lib/server/atdRecord";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 // sets attendance sesion with data from button click on the parent element where it was called
 export function useSetAtdRecord() {
+  const queryClient = useQueryClient();
+
   const { mutate: setAtdRecord, isPending: issetAtdRecordLoading } =
     useMutation({
       mutationFn: async (variables) => {
         return await setAtdRecordApi(variables);
       },
-      onSuccess: (data) => {
+      onSuccess: async (data) => {
         toast.success("Attendance taken successfully!")
+
+        await queryClient.invalidateQueries({ queryKey: ["get-atd-record"] });
       },
       onError: (error) => {
         toast.error(error.message);
@@ -22,18 +26,20 @@ export function useSetAtdRecord() {
 }
 
 // fetches attendance record for a given session and user
-export function useGetAtdRecord(sessionId) {
-  const { user } = useUser();
+export function useGetAtdRecord(sessionId, userId) {
 
-  const { data, isLoading: isGetAtdRecordLoading } = useQuery({
-    queryKey: ["get-attendance-record", sessionId, user?.id],
-    queryFn: () => getAtdRecord({ sessionId, userId: user?.id }),
-    staleTime: 3 * 60 * 1000,
-    enabled: !!sessionId && !!user?.id,
+  const { data, isLoading: isGetAtdRecordLoading, isFetched } = useQuery({
+    queryKey: ["get-atd-record", sessionId, userId],
+    queryFn: () => getAtdRecord({ sessionId, userId }),
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnMount: true,
+    enabled: !!sessionId && !!userId,
   });
 
   return {
     data,
     isGetAtdRecordLoading,
+    isFetched,
   };
 }
