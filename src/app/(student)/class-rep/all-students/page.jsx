@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FullLoader from "@/app/components/ui/FullLoader";
 import { useUser } from "@/hooks/query/useUser";
 import { FiSearch, FiFilter, FiEdit2, FiPlus, FiBell } from "react-icons/fi";
@@ -7,6 +7,7 @@ import { useGetStudents } from "@/hooks/query/useStudents";
 import highlightText from "@/app/helper/searchHighlight";
 import Button from "@/app/components/ui/Button";
 import EditDeviceModalModal from "../components/EditDeviceModal";
+import { useDebounce } from "@/hooks/useDebounce";
 
 
   //make it so that each device change can only be allowed every 7 days.
@@ -27,10 +28,16 @@ export default function StudentsPage() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const itemsPerPage = 20;
 
   const { students, count, isStudentsLoading, isPlaceholderData } =
-    useGetStudents(classRepDept, currentPage, searchTerm);
+    useGetStudents(classRepDept, currentPage, debouncedSearchTerm);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [debouncedSearchTerm]);
 
   const totalPages = count ? Math.ceil(count / itemsPerPage) : 0;
 
