@@ -1,11 +1,8 @@
 "use client";
-
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode";
 
-export default function QrScanner() {
-  const [scanResult, setScanResult] = useState(null);
-
+export default function QrScanner({ onScan }) {
   useEffect(() => {
     const scanner = new Html5QrcodeScanner("reader", {
       qrbox: {
@@ -19,39 +16,25 @@ export default function QrScanner() {
 
     function success(result) {
       scanner.clear();
-      setScanResult(result);
-
-      console.log("Qrcode read successfully!");
+      if (onScan) {
+        onScan(result);
+      }
     }
 
     function error(err) {
       console.warn(err);
-      console.log("No Qrcode found");
     }
-  }, []);
+
+    return () => {
+      try {
+        scanner.clear();
+      } catch (error) {
+        console.error("Failed to clear scanner", error);
+      }
+    };
+  }, [onScan]);
 
   return (
-    <div>
-      {scanResult ? (
-        <div>
-          Success: <a href={"http://" + scanResult}>{scanResult}</a>
-        </div>
-      ) : (
-        <div>
-          <div
-            id="reader"
-            style={{ width: "400px", height: "500px", margin: "auto" }}
-          ></div>
-          <style>
-            {`
-              #reader img[alt="Info icon"], 
-              span:nth-of-type(1) {
-                display: none !important;
-              }
-            `}
-          </style>
-        </div>
-      )}
-    </div>
+    <div id="reader" className="w-full h-full overflow-hidden rounded-lg"></div>
   );
 }
