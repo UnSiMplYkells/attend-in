@@ -1,4 +1,10 @@
-export function validateAttendance({ session, today, now, existingRecord }) {
+export function validateAttendance({
+  session,
+  today,
+  now,
+  existingRecord,
+  distanceFrmHall,
+}) {
   if (existingRecord) {
     return "Attendance already marked!";
   }
@@ -7,12 +13,16 @@ export function validateAttendance({ session, today, now, existingRecord }) {
     return "Class not for today";
   }
 
-  if (session.window_end <= now) {
+  if (now > session.timetables.end_time) {
     return "This class is over. Attendance not recorded";
   }
 
   if (!session.isActivated) {
     return "Attendance window is not active yet or is over.";
+  }
+
+  if (distanceFrmHall > 50) {
+    return "Not within class vicinity.";
   }
 
   return null;
