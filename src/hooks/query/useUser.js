@@ -10,7 +10,7 @@ async function fetchUser() {
 }
 
 export function useUser() {
-  const { isLoading, data: user, isError } = useQuery({
+  const { isLoading: isUserLoading, data: user, isError } = useQuery({
     queryKey: ["user"],
     queryFn: fetchUser,
     staleTime: Infinity,
@@ -23,8 +23,8 @@ export function useUser() {
   }
 
   return {
-    isLoading,
+    isUserLoading,
     user,
-    isAuthenticated: !!user && user.role === "authenticated"
+    isAuthenticated: !!user && user.role === "authenticated",
   };
 }
