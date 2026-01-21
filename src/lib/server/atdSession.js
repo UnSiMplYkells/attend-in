@@ -70,7 +70,7 @@ export async function getAttendanceSessionByQr(qrData, nowISO, today) {
 
   const { data: sessionByQr, error } = await supabase
     .from("attendance_sessions")
-    .select("*, classes(course_code)")
+    .select("*, classes(course_code), timetables!inner(end_time)")
     .eq("session_data", qrData)
     .single();
 
