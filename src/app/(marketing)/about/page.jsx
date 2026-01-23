@@ -29,7 +29,7 @@ export default function About() {
               </div>
             </div>
 
-            <div className="relative lg:-top-30 mt-14 flex justify-end gap-8 sm:-mt-44 sm:justify-start sm:pl-20 md:max-lg:pl-5 md:flex-row md:gap-6 md:mt-10  lg:mt-0 lg:pl-0">
+            <div className="relative lg:-top-30 mt-14 flex justify-end gap-8 sm:-mt-44 sm:justify-start sm:pl-20 md:max-lg:pl-5 md:flex-row md:gap-6 md:mt-10 lg:mt-0 lg:pl-0">
               <div className="ml-auto w-44 md:max-lg:w-60 flex-none space-y-8 pt-32 sm:ml-0 sm:pt-80 lg:order-last lg:pt-36 xl:order-0 xl:pt-80">
                 <div className="relative">
                   <Image
@@ -54,7 +54,7 @@ export default function About() {
                   <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10" />
                 </div>
                 <div className="relative">
-                  <img
+                  <Image
                     src="/image1.png"
                     alt="Discussion Placeholder"
                     width={400}
