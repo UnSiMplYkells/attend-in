@@ -4,25 +4,26 @@ import toast from "react-hot-toast";
 import QrScanner from "@/app/components/QrScanner";
 import { useUser } from "@/hooks/query/useUser";
 import { useGeo } from "@/hooks/useGeo";
-import { useGetCurrentClass } from "@/hooks/query/useClasses";
 import { useAttendanceSessionByQr } from "@/hooks/query/useAtdSessions";
-import { validateAttendance } from "@/app/helper/validateAttendance";
 import { useGetAtdRecord, useSetAtdRecord } from "@/hooks/query/useAtdRecord";
-import getDistanceInMeters from "@/app/helper/findDistance";
 import FullLoader from "@/app/components/ui/FullLoader";
-import { MdCheckCircle, MdLocationOn, MdQrCodeScanner } from "react-icons/md";
+import {
+  MdCheckCircle,
+  MdLocationOn,
+  MdQrCodeScanner,
+  MdError,
+} from "react-icons/md";
 import Button from "@/app/components/ui/Button";
 
 export default function ScanPage() {
   const [scanResult, setScanResult] = useState(null);
-  const [hasAttempted, setHasAttempted] = useState(false);
+
+  const [scanStatus, setScanStatus] = useState("idle");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const { user, isUserLoading } = useUser();
   const { data: location, loading: isGeoLoading } = useGeo();
-  const { data: currentClass } = useGetCurrentClass();
-  const { sessionByQr, isSessionByQrLoading } = useAttendanceSessionByQr(scanResult);
-
-  console.log("Session by QR:", sessionByQr);
+  const { sessionByQr, isSessionByQrLoading } =useAttendanceSessionByQr(scanResult);
 
   //fetches existing records only if we have a valid session from the QR
   const {
@@ -34,78 +35,66 @@ export default function ScanPage() {
 
   const { setAtdRecord, issetAtdRecordLoading } = useSetAtdRecord();
 
-  const distanceFrmHall = getDistanceInMeters(
-    location?.latitude,
-    location?.longitude,
-    currentClass?.latitude ?? null,
-    currentClass?.longitude ?? null
-  );
+    useEffect(() => {
+      //strictly checks if existingRecord is undefined, to know if it hasnt been fetched yet/loading
+      if (!sessionByQr || !isRecordFetched) return;
 
-  const nowNow = new Date().toISOString();
-  const todaysDate = new Date().toISOString().split("T")[0];
+      if (scanStatus !== 'idle') return;
 
-  useEffect(() => {
-    //strictly checks if existingRecord is undefined, to know if it hasnt been fetched yet/loading
-    if (sessionByQr && !isRecordFetched) {
-      return;
-    }
+      if (existingRecord) {
+        toast.error("Attendance already marked!");
+        setScanStatus("error");
+        setErrorMessage("Attendance already marked");
+        return;
+      }
 
-    //guard clauses to prevent premature execution
-    if (
-      !sessionByQr ||
-      !user ||
-      isGetAtdRecordLoading ||
-      hasAttempted ||
-      issetAtdRecordLoading
-    ) {
-      return;
-    }
+      // LOCATION CHECK
+      if (!location) {
+        toast.error("Waiting for GPS location...");
+        return;
+      }
 
-    //validation Logic
-    const errorMsg = validateAttendance({
-      session: sessionByQr,
-      today: todaysDate,
-      now: nowNow,
+      setScanStatus('loading'); // Show "Verifying..." UIz
+
+      setAtdRecord(
+        {
+          sessionId: sessionByQr.id,
+          latitude: location.latitude,
+          longitude: location.longitude,
+        },
+        {
+          onSuccess: (data) => {
+            setScanStatus("success");
+          },
+          onError: (error) => {
+            setScanStatus("error");
+            setErrorMessage(error.message || "Failed to mark attendance");
+          },
+        }
+      );
+
+    }, [
+      sessionByQr,
       existingRecord,
-      distanceFrmHall,
-    });
-
-    if (errorMsg) {
-      toast.error(errorMsg);
-      setHasAttempted(true);
-      return;
-    }
-
-    setAtdRecord({
-      sessionId: sessionByQr.id,
-      userId: user.id,
-      distanceFrmHall,
-    });
-
-    toast.success("Attendance Marked Successfully!");
-    setHasAttempted(true);
-  }, [
-    sessionByQr,
-    user,
-    existingRecord,
-    isRecordFetched,
-    isGetAtdRecordLoading,
-    distanceFrmHall,
-    setAtdRecord,
-    hasAttempted,
-    todaysDate,
-    nowNow,
-  ]);
+      isRecordFetched,
+      location,
+      setAtdRecord,
+      scanStatus,
+    ]);
 
   function handleScan(result) {
-    console.log("QR Scanned in Page:", result);
-    setScanResult(result);
-  };
+    if (result) {
+      setScanResult(result);
+      setScanStatus("idle");
+      setErrorMessage("");
+    }
+  }
 
   function handleReset() {
     setScanResult(null);
-    setHasAttempted(false);
-  };
+    setScanStatus("idle");
+    setErrorMessage("");
+  }
 
   if (isUserLoading || isGeoLoading) return <FullLoader />;
 
@@ -123,7 +112,7 @@ export default function ScanPage() {
         </p>
       </div>
 
-      <div className="w-full max-w-md bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden shadow-2xl relative">
+      <div className="w-full max-w-md bg-white/5 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden relative">
         <div className="absolute top-4 right-4 z-20 flex items-center gap-1.5 px-2 py-1 bg-black/40 rounded-full border border-white/5 backdrop-blur-sm">
           <MdLocationOn
             className={`text-xs ${
@@ -138,45 +127,69 @@ export default function ScanPage() {
         <div className="p-1">
           {scanResult ? (
             <div className="flex flex-col items-center justify-center py-12 px-6 text-center space-y-6">
-              {isSessionByQrLoading || isGetAtdRecordLoading ? (
+              {(isSessionByQrLoading ||
+                isGetAtdRecordLoading ||
+                scanStatus === "loading") && (
                 <div className="animate-pulse flex flex-col items-center">
-                  <div className="h-16 w-16 bg-white/10 rounded-full mb-4"></div>
-                  <div className="h-4 w-32 bg-white/10 rounded mb-2"></div>
-                  <p className="text-sm text-gray-500">Verifying session...</p>
-                  <p className="text-sm text-gray-500">Do not close or refresh this page</p>
+                  <div className="h-16 w-16 bg-white/10 rounded-full mb-4 flex items-center justify-center">
+                    <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                  </div>
+                  <h3 className="text-lg font-medium text-white mb-1">
+                    Verifying Location...
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    Connecting to secure server
+                  </p>
                 </div>
-              ) : hasAttempted ? (
-                <>
-                  <MdCheckCircle className="text-6xl text-green-500" />
-                  <div>
-                    <h3 className="text-xl font-bold text-white">
-                      Scan Complete
-                    </h3>
-                    <p className="text-gray-400 text-sm mt-1 break-all px-4">
-                      {scanResult}
+              )}
+
+              {scanStatus === "success" && (
+                <div className="animate-in zoom-in duration-300">
+                  <MdCheckCircle className="text-6xl text-green-500 mx-auto" />
+                  <div className="mt-4">
+                    <h3 className="text-xl font-bold text-white">Success!</h3>
+                    <p className="text-gray-400 text-sm mt-1 px-4">
+                      Attendance has been marked securely.
                     </p>
                   </div>
-                  <div className="w-full pt-4">
+                  <div className="w-full pt-6">
                     <Button onClick={handleReset} variant="secondary">
-                      Scan Again
+                      Scan Another
                     </Button>
                   </div>
-                </>
-              ) : (
-                <div className="text-gray-400">Processing...</div>
+                </div>
+              )}
+
+              {scanStatus === "error" && (
+                <div className="animate-in zoom-in duration-300">
+                  <MdError className="text-6xl text-red-500 mx-auto" />
+                  <div className="mt-4">
+                    <h3 className="text-xl font-bold text-white">
+                      {existingRecord ? "Verification Barred" : "Verification Failed"}
+                    </h3>
+                    <p className="text-red-300/80 text-sm mt-2 px-4 bg-red-500/10 py-2 rounded-lg border border-red-500/20">
+                      {errorMessage}
+                    </p>
+                  </div>
+                  <div className="w-full pt-6">
+                    <Button onClick={handleReset} variant="secondary">
+                      Try Again
+                    </Button>
+                  </div>
+                </div>
               )}
             </div>
           ) : (
+            /* SCANNER VIEW */
             <div className="relative aspect-square w-full bg-black/50 overflow-hidden rounded-xl">
               <QrScanner onScan={handleScan} />
               <div className="absolute inset-0 pointer-events-none border-30 border-black/50"></div>
-              <div className="absolute z-[-1] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border-2 border-indigo-500 rounded-lg shadow-[0_0_20px_rgba(99,102,241,0.5)]"></div>
             </div>
           )}
         </div>
       </div>
 
-      <div className="mt-8 text-center">
+      <div className="mt-5 text-center">
         <p className="text-xs text-gray-500">
           Ensure you are within the class vicinity before scanning.
         </p>
