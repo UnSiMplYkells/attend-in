@@ -1,9 +1,13 @@
 "use client"
 import ThemeToggle from '../components/ThemeToggle';
-import Beams from '../components/ui/Beams';
 import Footer from './components/Footer'
 import Navigation from './components/Navigation'
 import { usePathname } from "next/navigation";
+
+// const Beams = dynamic(() => import("../components/ui/Beams"), {
+//   ssr: false,
+//   loading: () => <div className="fixed inset-0 bg-black" />,
+// })
 
 export default function layout({children}) {
   const pathname = usePathname();
@@ -11,7 +15,7 @@ export default function layout({children}) {
   return (
     <div className="relative flex flex-col max-w-[1320px] m-auto">
       <div className="absolute inset-0 z-0 overflow-hidden">
-        {pathname === "/" && 
+        {/* {pathname === "/" && 
           <Beams
             beamWidth={2.4}
             beamHeight={25}
@@ -22,8 +26,8 @@ export default function layout({children}) {
             scale={0.15}
             rotation={40}
           />
-        }
-        <Beams
+        } */}
+        {/* <Beams
           beamWidth={1}
           beamHeight={25}
           beamNumber={25}
@@ -32,7 +36,7 @@ export default function layout({children}) {
           noiseIntensity={2}
           scale={0.2}
           rotation={40}
-        />
+        /> */}
       </div>
       {pathname !== "/" && <Navigation />}
       <div className="flex-1">{children}</div>

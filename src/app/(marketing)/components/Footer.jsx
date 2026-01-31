@@ -12,14 +12,15 @@ export default function Footer() {
         </h2>
 
         <p className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-5xl">
-          Boost your productivity.
+          Secure your classroom.
           <br />
-          Start using our app today.
+          Start using Attend•in today.
         </p>
 
         <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-gray-300">
-          Incididunt sint fugiat pariatur cupidatat consectetur sit cillum anim
-          id veniam aliqua proident excepteur commodo do ea.
+          Experience the most reliable attendance system built for modern
+          institutions. Stop proxy signing and save valuable teaching time with
+          our anti-spoofing technology.
         </p>
 
         <div className="mt-10 flex items-center justify-center gap-x-6">
@@ -39,6 +40,7 @@ export default function Footer() {
           {[
             { label: "Features", href: "/features" },
             { label: "About", href: "/about" },
+            { label: "Support", href: "/contact" },
             { label: "Partners", href: "/not-found" },
             { label: "Signup", href: "/signup" },
             { label: "Login", href: "/login" },
@@ -55,7 +57,7 @@ export default function Footer() {
 
         <div className="mt-5 flex justify-center gap-x-10">
           <a
-            href="#"
+            href="https://www.linkedin.com/in/nwachukwu-ekeledirichukwu-8567342b2"
             target="_blank"
             rel="noopener noreferrer"
             className="text-gray-400 hover:text-white transition-colors"
@@ -72,7 +74,7 @@ export default function Footer() {
           </a>
 
           <a
-            href="#"
+            href="https://www.instagram.com/_unsimplykells?igsh=N3prenlwOWx6NjYw"
             target="_blank"
             rel="noopener noreferrer"
             className="text-gray-400 hover:text-white transition-colors"
@@ -93,7 +95,7 @@ export default function Footer() {
           </a>
 
           <a
-            href="#"
+            href="https://x.com/Ominiguidest"
             target="_blank"
             rel="noopener noreferrer"
             className="text-gray-400 hover:text-white transition-colors"
@@ -110,7 +112,7 @@ export default function Footer() {
           </a>
 
           <a
-            href="https://github.com/throwAway-sus/HNG-internship.git"
+            href="https://github.com/UnSiMplYkells"
             target="_blank"
             rel="noopener noreferrer"
             className="text-gray-400 hover:text-white transition-colors"

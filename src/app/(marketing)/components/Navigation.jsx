@@ -52,6 +52,16 @@ export default function Navigation() {
               About
             </Link>
             <Link
+              href="/contact"
+              className={`${
+                pathName === "/contact"
+                  ? "bg-indigo-600/60"
+                  : " hover:bg-white/10"
+              } hidden sm:block rounded-full px-4 py-2 transition-colors hover:text-white`}
+            >
+              Support
+            </Link>
+            <Link
               href="/login"
               className="ml-2 flex items-center gap-2 rounded-full bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition-all hover:bg-indigo-500 hover:shadow-lg hover:shadow-indigo-500/20 active:scale-95"
             >
@@ -119,6 +129,17 @@ export default function Navigation() {
               }`}
             >
               About
+            </Link>
+            <Link
+              href="/contact"
+              onClick={() => setOpen(false)}
+              className={`text-2xl font-medium transition-colors py-4 px-8 bg-black/30 hover:bg-black/60 ${
+                pathName === "/contact"
+                  ? "text-indigo-400"
+                  : "text-white hover:text-indigo-300"
+              }`}
+            >
+              Support
             </Link>
 
             <Button variant="primary">Login &#8594;</Button>
