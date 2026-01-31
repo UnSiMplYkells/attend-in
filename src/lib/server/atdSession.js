@@ -7,7 +7,6 @@ export async function setAtdSession({
   sessionData,
   winStart,
   winEnd,
-  sessionDate,
 }) {
   const supabase = await createClient();
 
@@ -20,7 +19,6 @@ export async function setAtdSession({
       session_data: sessionData,
       window_start: winStart,
       window_end: winEnd,
-      session_date: sessionDate,
     })
     .select()
     .single();
@@ -32,9 +30,8 @@ export async function setAtdSession({
   return data;
 }
 
-export async function getActiveAtdSession({ classIds, timeNow, nowNow, todaysDate }) {
+export async function getActiveAtdSession({ classIds, timeNow, nowNow }) {
   if (!classIds || classIds.length === 0) return null;
-
   const supabase = await createClient();
 
   const ids = Array.isArray(classIds) ? classIds : [classIds];
@@ -42,12 +39,11 @@ export async function getActiveAtdSession({ classIds, timeNow, nowNow, todaysDat
   //gets active attendance session for the particular user's classes according to todays date
   const { data: session, error } = await supabase
     .from("attendance_sessions")
-    .select("*, timetables!inner(*)")
+    .select("*, timetables!timetable_id(*)")
     .in("class_id", ids)
-    .eq("session_date", todaysDate)
     .lte("timetables.start_time", timeNow)
     .gte("timetables.end_time", timeNow)
-    .single()
+    .maybeSingle();
 
   if (error) {
     throw new Error(error.message || "Failed to get attendance session");
@@ -70,7 +66,7 @@ export async function getAttendanceSessionByQr(qrData, nowISO, today) {
 
   const { data: sessionByQr, error } = await supabase
     .from("attendance_sessions")
-    .select("*, classes(course_code), timetables!inner(end_time)")
+    .select("*, classes(course_code), timetables!timetable_id(end_time)")
     .eq("session_data", qrData)
     .single();
 

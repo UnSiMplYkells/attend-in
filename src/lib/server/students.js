@@ -7,49 +7,24 @@ export async function getStudents(department, page = 1, searchTerm = "") {
   const ITEMS_PER_PAGE = 20;
   const from = (page - 1) * ITEMS_PER_PAGE;
   const to = from + ITEMS_PER_PAGE - 1;
-  
-  // const { data, error } = await supabase
-  //   .from("users")
-  //   .select(
-  //     `
-  //     *,
-  //     students_registry!inner(
-  //       department
-  //     )
-  //   `
-  // {
-  //   count: "exact";
-  // }
-  //   )
-  //   .eq("students_registry.department", department) // filter by department
-  //   .range(from, to) //20 per api call
 
-  // if (error) {
-  //   console.error(error);
-  //   throw new Error("students could not be loaded");
-  // }
-
-  // if (searchTerm) {
-  //   query = query.or(
-  //     `full_name.ilike.%${searchTerm}%,matric_number.ilike.%${searchTerm}%`
-  //   );
-  // }
-
-  // 1. Start building the query (Do NOT await yet)
+  //start building the query
   let query = supabase
-    .from("students_registry")
-    .select("*", { count: "exact" })
+    .from("users")
+    .select("*, students_registry!inner(department)", { count: "exact" })
+    // .eq("students_registry.department", department) //filters by department
     .order("full_name", { ascending: true })
     .range(from, to);
 
-  // 3. Apply search filter if needed
+  //applys the search filter if needed
   if (searchTerm) {
     query = query.or(
-      `full_name.ilike.%${searchTerm}%,matric_number.ilike.%${searchTerm}%`
+      `full_name.ilike.%${searchTerm}%,matric_number.ilike.%${searchTerm}%`,
+      // { foreignTable: "users" },
     );
   }
 
-  // 4. Await execution here
+  //awaits execution here
   const { data, error, count } = await query;
 
   if (error) {
@@ -57,7 +32,6 @@ export async function getStudents(department, page = 1, searchTerm = "") {
     throw new Error("students could not be loaded");
   }
 
-  // 5. Return both data and count
   return { data, count };
 }
 

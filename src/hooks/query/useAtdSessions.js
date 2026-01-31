@@ -34,11 +34,10 @@ export function useSetAtdSessions() {
 export function useGetActiveAtdSession(classIds) {
   const timeNow = getCurrentTime();
   const nowNow = new Date().toISOString();
-  const todaysDate = new Date().toISOString().split("T")[0];
 
   const { data: activeAtdSession, isLoading: isGetAtdSessionLoading } = useQuery({
       queryKey: ["active-attendance-session", classIds],
-      queryFn: () => getActiveAtdSession({classIds, timeNow, nowNow, todaysDate}),
+      queryFn: () => getActiveAtdSession({classIds, timeNow, nowNow}),
       enabled: !!classIds?.length,
       refetchInterval: 30 * 1000,
       refetchIntervalInBackground: true,
