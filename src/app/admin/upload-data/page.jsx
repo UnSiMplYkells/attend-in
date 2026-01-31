@@ -30,10 +30,11 @@ export default function UploadsPage() {
     Papa.parse(file, {
       header: true,
       skipEmptyLines: true,
+      worker: true,
       complete: async (results) => {
         addLog(
           `File parsed. Found ${results.data.length} rows. Starting processing...`,
-          "success"
+          "success",
         );
         await processRoster(results.data);
         setUploading(false);
