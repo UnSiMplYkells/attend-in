@@ -51,9 +51,9 @@ export default function QrGenerator({ value }) {
 
   return (
     <div className="flex flex-col items-center gap-4 w-full">
-      <div className="bg-white p-4 rounded-xl shadow-[0_0_40px_-10px_rgba(255,255,255,0.2)] w-fit mx-auto">
+      <div className="bg-white p-4 rounded-xl w-fit sm:mx-auto">
         <div
-          className="w-[250px] aspect-square"
+          className="w-[98%] max-w-[256px] aspect-square"
           style={{ background: "white" }}
         >
           <QRCode
