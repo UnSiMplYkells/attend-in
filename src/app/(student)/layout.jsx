@@ -1,14 +1,17 @@
-import { requireUser } from "@/lib/server/reuireUser";
-import Sidebar from "./components/Sidebar";
-import Header from "./components/Header";
-import ParticlesBackground from "./components/ParticlesBackground";
+import dynamic from "next/dynamic"
+import { requireUser } from "@/lib/server/reuireUser"
+import Sidebar from "./components/Sidebar"
+import Header from "./components/Header"
+import AuthToast from "../components/AuthToasts";
+// rember to import partiles background using lazyload
 
 export default async function DashboardLayout({ children }) {
-  // const user = await requireUser();
+  //await requireUser();
 
   return (
     <>
-      <ParticlesBackground />
+    {/* remeber to return aprticles background */}
+      <AuthToast />
       <div className="flex flex-col relative max-w-[1380px] h-screen m-auto text-white overflow-hidden">
         <Header />
         <div className="flex flex-1 overflow-hidden md:gap-3">
