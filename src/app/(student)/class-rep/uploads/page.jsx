@@ -4,8 +4,7 @@ import Papa from "papaparse";
 import { createClient } from "@/app/utils/supabase/client";
 import UploadsPage from "@/app/admin/upload-data/page";
 
-//later, secionize the timetables table on supabase, so that each level will have thier own section
-//in supabase table,  is there a way to sectionize a particular table, asin in my tables, it is a timetable tanles quite alright, but now, the thing is that from100lvl to 400lvl have thier own timetables, and so all of then sends thier timetable to the timetable table, which makes it kinda messy(i dont know). soi dont know if there is a way to sectionize that particular table for different leels, but not split the tables, because they are related data
+//later, sectionize the timetables table on supabase, so that each level will have thier own section
 
 // maps day of the week to figures
 const DAY_MAP = {
@@ -82,10 +81,11 @@ export default function CrUploadsPage(){
     Papa.parse(file, {
       header: true,
       skipEmptyLines: true,
+      worker: true,
       complete: async (results) => {
         addLog(
           `File parsed. Found ${results.data.length} rows. Processing dynamic headers...`,
-          "success"
+          "success",
         );
         await processTimetableMatrix(results.data, results.meta.fields);
         setUploading(false);
