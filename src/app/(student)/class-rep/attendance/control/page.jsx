@@ -34,6 +34,11 @@ export default function page() {
   const { data: currentClass } = useGetCurrentClass();
 
   useEffect(() => {
+    if (!activeAtdSession || !userClasses) {
+      setAttendanceStarted(false); // Reset if no session found
+      return;
+    }
+
     if (activeAtdSession && userClasses) {
       //finds if any class is active in the current session
       const cls = userClasses.find((c) => c.id === activeAtdSession.class_id);
@@ -63,15 +68,19 @@ export default function page() {
       return;
     }
 
+    if (!scheduleItem || !scheduleItem.id) {
+      alert("Cannot start session: No valid schedule ID found.");
+      return;
+    }
+
     const ranTimeSlot = random30MinSlot(
       scheduleItem?.start_time,
       scheduleItem?.end_time,
       30
     );
 
-    const todaysDate = new Date().toISOString().split("T")[0];
     const sessionName = cls.course_code;
-    const dateDay = new Date().toString().split(" GMT")[0];
+    const dateDay = new Date().toISOString().split("T")[0];
     const qrValue = `${sessionName} ${dateDay}`;
 
     setQrData(qrValue);
@@ -81,11 +90,10 @@ export default function page() {
     //sets the attendance session
     setAtdSession({
       classId: cls.id,
-      TtLink: currentClass?.[0]?.id,
+      TtLink: scheduleItem.id,
       sessionData: qrValue,
       winStart: ranTimeSlot.startTime,
       winEnd: ranTimeSlot.endTime,
-      sessionDate: todaysDate,
     });
   }
 
@@ -236,7 +244,7 @@ export default function page() {
                     onClick={() => handleStartAttendance(cls)}
                     disabled={issetAtdSessionLoading || activeAtdSession}
                   >
-                    {issetAtdSessionLoading ? <Loader /> : ( activeAtdSession ? "View QR Code" : "Start Sesison")}
+                    {issetAtdSessionLoading ? <Loader /> : ( activeAtdSession ? "View QR Code" : "Start Session")}
                   </Button>
                 ) : (
                   <button

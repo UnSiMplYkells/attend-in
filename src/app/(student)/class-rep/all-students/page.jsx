@@ -1,23 +1,16 @@
 "use client";
 import { useState, useEffect } from "react";
-import FullLoader from "@/app/components/ui/FullLoader";
 import { useUser } from "@/hooks/query/useUser";
-import { FiSearch, FiFilter, FiEdit2, FiPlus, FiBell } from "react-icons/fi";
 import { useGetStudents } from "@/hooks/query/useStudents";
-import highlightText from "@/app/helper/searchHighlight";
-import Button from "@/app/components/ui/Button";
-import EditDeviceModalModal from "../components/EditDeviceModal";
 import { useDebounce } from "@/hooks/useDebounce";
-
-
-  //make it so that each device change can only be allowed every 7 days.
-  //if it changes today, it can only change that user in the next 7 days again.
-  //add changed date in column supabase db, and check it against date.now, if >7, then allow, if not, deny with a toast
-
+import { FiSearch, FiFilter, FiEdit2, FiPlus, FiBell } from "react-icons/fi";
+import EditDeviceModal from "../components/EditDeviceModal";
+import Button from "@/app/components/ui/Button";
+import FullLoader from "@/app/components/ui/FullLoader";
+import highlightText from "@/app/helper/searchHighlight";
 
   //fully implement filter feature so it can get students based on their class
   //make both full list downloadable, and also list of filtered class downloadable
-
 
 export default function StudentsPage() {
   const { user, isAuthenticated, isLoading: isUserLoading } = useUser();
@@ -34,6 +27,9 @@ export default function StudentsPage() {
 
   const { students, count, isStudentsLoading, isPlaceholderData } =
     useGetStudents(classRepDept, currentPage, debouncedSearchTerm);
+
+    console.log(students)
+
 
   useEffect(() => {
     setCurrentPage(1);
@@ -82,7 +78,6 @@ export default function StudentsPage() {
   }
 
   function handleEdit(student) {
-    console.log("Edit student at index:", student.matric_number);
     setSelectedStudent(student);
     setOpen(true);
   }
@@ -129,7 +124,7 @@ export default function StudentsPage() {
                   Matric Number, and Role.
                 </p>
               </div>
-              <div className="mt-4 sm:ml-5 sm:mt-0 flex [@media(max-width:540px)]:flex-row flex-col items-center gap-3">
+              {/* <div className="mt-4 sm:ml-5 sm:mt-0 flex [@media(max-width:540px)]:flex-row flex-col items-center gap-3">
                 <div className="block lg:hidden">
                   <Button width="w-fit" padding="px-3 py-2" variant="primary">
                     + Add Student
@@ -151,7 +146,7 @@ export default function StudentsPage() {
                     placeholder="Filter (e.g. COS101)..."
                   />
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
 
@@ -226,18 +221,22 @@ export default function StudentsPage() {
                     <td className="px-3 py-4 hidden md:table-cell">
                       <span
                         className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${
-                          student.role === "Class Rep"
+                          student.role === "class rep"
                             ? "bg-purple-400/10 text-purple-400 ring-purple-400/30"
                             : "bg-green-400/10 text-green-400 ring-green-400/30"
                         }`}
                       >
-                        student
+                        {student.role}
                       </span>
                     </td>
                     <td className="relative py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 lg:pr-8">
                       <button
                         onClick={() => handleEdit(student, idx)}
-                        className="text-indigo-400 hover:text-indigo-300"
+                        className={`cursor-pointer 
+                          ${student.matric_number === user.profile.matric_number ? 
+                            "pointer-events-none text-indigo-200" : 
+                            "text-indigo-400 hover:text-indigo-300"}
+                        `}
                       >
                         Edit
                       </button>
@@ -324,7 +323,7 @@ export default function StudentsPage() {
                     >
                       {pageNum}
                     </button>
-                  )
+                  ),
                 )}
 
                 <button
@@ -351,7 +350,7 @@ export default function StudentsPage() {
           </div>
         </div>
       </div>
-      <EditDeviceModalModal
+      <EditDeviceModal
         open={open}
         setOpen={setOpen}
         student={selectedStudent}
