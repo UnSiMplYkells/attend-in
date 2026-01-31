@@ -8,7 +8,7 @@ import Button from "@/app/components/ui/Button";
 import { FaExclamationTriangle } from "react-icons/fa";
 
 
-export default function EditDeviceModalModal({ open, setOpen, student }) {
+export default function EditDeviceModal({ open, setOpen, student }) {
   const supabase = createClient();
   
   const { full_name, matric_number } = student || {};
@@ -16,13 +16,44 @@ export default function EditDeviceModalModal({ open, setOpen, student }) {
   const [loading, setLoading] = useState(false);
 
   async function handleChangeDevice() {
+    const FIVE_DAYS = 5 * 24 * 60 * 60 * 1000;
+    const now = new Date();
+
     try {
       setLoading(true);
+
+      const { data, error: fetchError } = await supabase
+        .from("users")
+        .select("device_changed_at")
+        .eq("matric_number", matric_number)
+        .single()
+
+        if (fetchError) throw fetchError;
+
+      if (data?.device_changed_at) {
+        const lastChange = new Date(data.device_changed_at);
+        const timeElapsed = now.getTime() - lastChange.getTime();
+
+        if (timeElapsed < FIVE_DAYS) {
+          const remainingDays = Math.ceil(
+            (FIVE_DAYS - timeElapsed) / (24 * 60 * 60 * 1000),
+          );
+          toast.error(
+            `Device can only be changed once every 5 days. Try again in ${remainingDays} day(s).`,
+          );
+          return;
+        }
+      }
 
       const updatePromise = (async () => {
         const { error } = await supabase
           .from("users")
-          .update({ bound_device_id: null })
+          .update(
+            { 
+              bound_device_id: null, 
+              device_changed_at: new Date().toISOString() 
+            }
+          )
           .eq("matric_number", matric_number);
 
         if (error) throw error;
@@ -35,6 +66,7 @@ export default function EditDeviceModalModal({ open, setOpen, student }) {
       });
     } catch (err) {
       console.error(err);
+      toast.error("An unexpected error occurred.");
     } finally {
       setLoading(false);
       setOpen(false);
