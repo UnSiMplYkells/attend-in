@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react"
 import { useGeo } from "@/hooks/useGeo";
 import { useGetCurrentClass, useGetUsersClasses } from "@/hooks/query/useClasses";
 import Button from "@/app/components/ui/Button";
@@ -9,7 +9,6 @@ import { useGetActiveAtdSession, useSetAtdSessions } from "@/hooks/query/useAtdS
 import FullLoader from "@/app/components/ui/FullLoader";
 import { MdAccessTime, MdLocationOn, MdSensors } from "react-icons/md";
 import { HiOutlineStatusOnline } from "react-icons/hi";
-
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Loader from "@/app/components/ui/Loader";
@@ -50,10 +49,6 @@ export default function page() {
       }
     }
 
-    // if (activeAtdSession) {
-    //   const nowNow = new Date().toISOString();
-    //   if (activeAtdSession?.window_end > nowNow) setAttendanceStarted(false);
-    // }
   }, [activeAtdSession, userClasses]);
 
   function handleStartAttendance(cls) {
@@ -80,7 +75,7 @@ export default function page() {
     );
 
     const sessionName = cls.course_code;
-    const dateDay = new Date().toISOString().split("T")[0];
+    const dateDay = new Date().toString().split(" GMT")[0];
     const qrValue = `${sessionName} ${dateDay}`;
 
     setQrData(qrValue);
@@ -193,7 +188,7 @@ export default function page() {
                 relative group flex flex-col justify-between p-6 rounded-xl border transition-all duration-300 
                 ${
                   isActive
-                    ? "bg-linear-to-br from-indigo-900/20 to-black border-indigo-500/30 shadow-lg shadow-indigo-900/10 hover:border-indigo-500/50"
+                    ? "bg-linear-to-br from-indigo-900/30 to-black border-indigo-500/30 shadow-lg shadow-indigo-900/10 hover:border-indigo-500/50"
                     : "bg-white/5 border-white/5 hover:bg-white/10"
                 }`}
               onClick={
@@ -213,12 +208,13 @@ export default function page() {
                       }`}
                   >
                     {isActive ? "Scheduled Now" : "Inactive"}
+                    {isAtdActivated && (
+                      <span className="flex items-center gap-1 text-red-400 text-xs font-bold animate-pulse">
+                        <HiOutlineStatusOnline /> LIVE
+                      </span>
+                    )}
                   </span>
-                  {isAtdActivated && (
-                    <span className="flex items-center gap-1 text-red-400 text-xs font-bold animate-pulse">
-                      <HiOutlineStatusOnline /> LIVE
-                    </span>
-                  )}
+
                   {cls.latitude && cls.longitude && (
                     <div className="flex items-center align gap-px text-[10px] leading-none text-gray-400 font-mono bg-black/20 px-2 py-2 rounded border border-white/5">
                       <MdLocationOn className="text-gray-500 text-xs" />
@@ -244,7 +240,13 @@ export default function page() {
                     onClick={() => handleStartAttendance(cls)}
                     disabled={issetAtdSessionLoading || activeAtdSession}
                   >
-                    {issetAtdSessionLoading ? <Loader /> : ( activeAtdSession ? "View QR Code" : "Start Session")}
+                    {issetAtdSessionLoading ? (
+                      <Loader />
+                    ) : activeAtdSession ? (
+                      "View QR Code"
+                    ) : (
+                      "Start Session"
+                    )}
                   </Button>
                 ) : (
                   <button
