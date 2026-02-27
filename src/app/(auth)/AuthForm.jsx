@@ -12,6 +12,7 @@ import { createDeviceFingerprint } from "@/lib/deviceFingerprint";
 
 export default function AuthForm({ pathname }) {
   const supabase = createClient();
+
   const { signup, isSignupLoading } = useSignup();
   const { login, isLoginLoading} = useLogin()
   const { adminLogin, isAdminLoginLoading } = useAdminLogin()
@@ -93,7 +94,7 @@ export default function AuthForm({ pathname }) {
       const currentTime = new Date();
       const expiresAt = new Date(invite.expires_at);
 
-      // Check time, make sure not up to 3 minutes after code was created
+      //check time, make sure not up to 3 minutes after code was created
       if (currentTime > expiresAt) {
         throw new Error("OTP has expired. Request a new one.");
         return;

@@ -40,7 +40,6 @@ export default function AuthModal({ open, setOpen, onConfirmStudent, onConfirmCl
 
   function handleClose() {
     setOpen(false);
-    // Optional: delay resetting form visibility so it doesn't flicker while closing
     setTimeout(() => setClassRepFormVisible(false), 300);
   };
 
