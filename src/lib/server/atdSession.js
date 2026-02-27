@@ -1,4 +1,4 @@
-"use server"
+"use server";
 import { createClient } from "@/app/utils/supabase/server";
 
 export async function setAtdSession({
@@ -36,6 +36,11 @@ export async function getActiveAtdSession({ classIds, timeNow, nowNow }) {
 
   const ids = Array.isArray(classIds) ? classIds : [classIds];
 
+  //gets the start of today in YYYY-MM-DDT00:00:00
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const todayISO = today.toISOString();
+
   //gets active attendance session for the particular user's classes according to todays date
   const { data: session, error } = await supabase
     .from("attendance_sessions")
@@ -43,6 +48,7 @@ export async function getActiveAtdSession({ classIds, timeNow, nowNow }) {
     .in("class_id", ids)
     .lte("timetables.start_time", timeNow)
     .gte("timetables.end_time", timeNow)
+    .gte("window_start", todayISO)
     .maybeSingle();
 
   if (error) {
@@ -82,5 +88,23 @@ export async function getAttendanceSessionByQr(qrData, nowISO, today) {
   return {
     ...sessionByQr,
     isActivatedFrmQr,
+  };
+}
+
+// for the history of classes
+export async function getSessionsByClassId(classId) {
+  const supabase = await createClient();
+
+  const { data: historicalSession, error } = await supabase
+    .from("attendance_sessions")
+    .select("window_start, id, attendance_records!id(session_id, distance_frm_hall, users!student_id(full_name, matric_number))")
+    .eq("class_id", classId);
+  
+  if (error) {
+    throw new Error(error.message || "Failed to get attendance session");
+  }
+
+  return {
+    historicalSession
   };
 }

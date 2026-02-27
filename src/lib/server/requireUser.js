@@ -1,7 +1,7 @@
 "use server";
-import { createClient } from "@/app/utils/supabase/server"
-import { redirect } from "next/navigation"
-import { getCurrentUser } from "./session"
+import { createClient } from "@/app/utils/supabase/server";
+import { redirect } from "next/navigation";
+import { getCurrentUser } from "./session";
 
 export async function requireUser() {
   const user = await getCurrentUser();
@@ -16,7 +16,7 @@ export async function requireUser() {
 
 // If role not class rep, redirect to student dashboard
 export async function requireRole() {
-  const supabase =  await createClient();
+  const supabase = await createClient();
   const user = await getCurrentUser();
 
   const { data: dbUser } = await supabase

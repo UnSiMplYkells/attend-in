@@ -1,7 +1,8 @@
 import {
   setAtdSession as setAtdSessionApi,
   getActiveAtdSession,
-  getAttendanceSessionByQr
+  getAttendanceSessionByQr,
+  getSessionsByClassId,
 } from "@/lib/server/atdSession";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import getCurrentTime from "@/app/helper/getCurrentTime";
@@ -63,4 +64,17 @@ export function useAttendanceSessionByQr(qrData) {
   });
 
   return { sessionByQr, isSessionByQrLoading };
+}
+
+//fetches attendance session by class id because of the history something
+export function useGetSessionsByClassId(classId) {
+  const { data, isLoading: isHistoricalSessionLoading } =
+    useQuery({
+      queryKey: ["attendance-session-by-classId", classId],
+      queryFn: () => getSessionsByClassId(classId),
+      enabled: !!classId,
+      // staleTime: 1000 * 30, // 30 seconds (attendance window is time-based)
+    });
+
+  return { data, isHistoricalSessionLoading };
 }

@@ -51,6 +51,23 @@ export async function checkUserExists(matricNo) {
   return existingUsers;
 }
 
+//for the downlaod funciton of class list bypassing pagination
+export async function getStudentsByDept(department) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("users")
+    .select("*, students_registry!inner(department)");
+    // .eq("students_registry.department", department) //filters by department
+
+  if (error) {
+    console.error(error);
+    throw new Error("students could not be loaded");
+  }
+
+  return data;
+}
+
 
 // for admin usage
 export async function getStudentsII(){

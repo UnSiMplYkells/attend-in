@@ -29,10 +29,42 @@ export async function getAtdRecord({ sessionId, userId }) {
 
   const { data, error } = await supabase
     .from("attendance_records")
-    .select("*")
-    .eq("student_id", userId)
+    .select(`
+      *, 
+      users!student_id (
+        full_name, 
+        students_registry!matric_number (
+          department,
+          matric_number
+        )
+      ), 
+      attendance_sessions!session_id (
+        window_start,
+        window_end,
+        classes!class_id (course_code)
+        )
+      `)
     .eq("session_id", sessionId)
-    .single();
+
+  if (error) {
+    // Ideally return null if no record found, rather than throwing,
+    // so the UI knows it's simply "not marked yet"
+    if (error.code === "PGRST116") return null;
+    throw new Error(error.message || "Failed to record attendance session");
+  }
+
+  return data;
+}
+
+//fetches attendance record for a based on date and name of course. sort of filter something
+export async function getAtdRecordByFilter({ sessionId, userId }) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("attendance_records")
+    .select("*, users!student_id(*, students_registry!matric_number(*))")
+    // .eq("student_id", userId)
+    .eq("session_id", sessionId)
 
   if (error) {
     // Ideally return null if no record found, rather than throwing,

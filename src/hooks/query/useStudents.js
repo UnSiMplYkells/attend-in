@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { getStudents } from "@/lib/server/students";
+import { getStudents, getStudentsByDept } from "@/lib/server/students";
 
 export function useGetStudents(department, page = 1, searchTerm = "") {
   const {data, isLoading: isStudentsLoading, isPlaceholderData} = useQuery({
@@ -18,6 +18,21 @@ export function useGetStudents(department, page = 1, searchTerm = "") {
   };
 }
 
+// for admin usage
+export function useGetStudentsByDept(department) {
+  const { isLoading: isAllDeptStudentsLoading, data: allDeptStudents } =
+    useQuery({
+      queryKey: ["studentsByDept"],
+      queryFn: () => getStudentsByDept(department),
+      enabled: !!department,
+      staleTime: Infinity,
+    });
+
+  return {
+    isAllDeptStudentsLoading,
+    allDeptStudents,
+  };
+}
 
 // for admin usage
 export function useGetStudentsII() {

@@ -27,10 +27,12 @@ export function useSetAtdRecord() {
 
         return data;
       },
-      onSuccess: async (data) => {
+      onSuccess: async (data, variables) => {
         toast.success(`Attendance Marked! (${Math.round(data.distance)}m away)`)
 
-        await queryClient.invalidateQueries({ queryKey: ["get-atd-record"] });
+        await queryClient.invalidateQueries({
+          queryKey: ["get-atd-record", variables.sessionId],
+        });
       },
       onError: (error) => {
         toast.error(error.message);
@@ -41,20 +43,18 @@ export function useSetAtdRecord() {
 }
 
 // fetches attendance record for a given session and user
-export function useGetAtdRecord(sessionId, userId) {
+export function useGetAtdRecord(sessionId) {
 
-  const { data, isLoading: isGetAtdRecordLoading, isFetched } = useQuery({
-    queryKey: ["get-atd-record", sessionId, userId],
-    queryFn: () => getAtdRecord({ sessionId, userId }),
+  const { data, isLoading: isGetAtdRecordLoading } = useQuery({
+    queryKey: ["get-atd-record", sessionId],
+    queryFn: () => getAtdRecord({ sessionId }),
     staleTime: 0,
-    gcTime: 0,
     refetchOnMount: true,
-    enabled: !!sessionId && !!userId,
+    enabled: !!sessionId
   });
 
   return {
     data,
     isGetAtdRecordLoading,
-    isFetched,
   };
 }
