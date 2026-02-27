@@ -1,11 +1,10 @@
-// src/app/api/auth/user/route.js
 import { NextResponse } from "next/server";
 import { createClient } from "@/app/utils/supabase/server";
 
 export async function GET() {
   const supabase = await createClient();
 
-  // 1. Get the Auth User first (we need the ID/Matric to fetch the rest)
+  //gets the Auth User first (we need the matric to fetch the rest)
   const {
     data: { user },
     error: userError,
@@ -18,7 +17,7 @@ export async function GET() {
   const matricNo = user?.user_metadata?.matric_no;
   const userId = user?.id;
 
-  // 2. Fetch BOTH profiles at the exact same time (Parallel)
+  //fetches BOTH profiles at the exact same time in Parallel
   const [registryResult, userProfileResult] = await Promise.all([
     supabase
       .from("students_registry")
@@ -32,10 +31,11 @@ export async function GET() {
       .single(),
   ]);
 
-  // 3. Destructure results
+  //destructure results
   const { data: profile } = registryResult;
   const { data: profileII } = userProfileResult;
 
+  //using rest operator, adds the profiles to the user object
   const combinedUser = {
     ...user,
     profile: profile || null,
