@@ -1,5 +1,6 @@
 "use client";
 import Navigation from "./components/Navigation";
+import { useUser } from "@/hooks/query/useUser";
 import Button from "../components/ui/Button";
 import Link from "next/link";
 import Image from "next/image";
@@ -11,6 +12,8 @@ import {
   MdSpeed,
   MdSupportAgent,
 } from "react-icons/md";
+import { IoMdAnalytics } from "react-icons/io";
+
 
 const features = [
   {
@@ -47,10 +50,10 @@ const features = [
     },
   },
   {
-    title: "Active Support",
+    title: "Smart Analytics",
     description:
-      "Our support team is always ready to help. Reach out via email or phone for any assistance you need or questions you have.",
-    icon: MdSupportAgent,
+      "Gain deep insights into attendance patterns. Visualize student engagement trends with auto-generated charts to help improve classroom participation.",
+    icon: IoMdAnalytics,
     color: {
       text: "text-cyan-400",
       bg: "bg-cyan-500/20",
@@ -82,6 +85,8 @@ const features = [
 ];
 
 export default function Home() {
+  const { isAuthenticated } = useUser();
+
   return (
     <div className="overflow-x-hidden">
       <Navigation />
@@ -116,11 +121,13 @@ export default function Home() {
             </p>
 
             <div className="mt-10 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 w-full sm:w-auto">
-              <Link href="/signup" className="w-full sm:w-auto">
-                <Button variant="primary" width="w-full sm:w-[180px]">
-                  Get Started
-                </Button>
-              </Link>
+              {!isAuthenticated && (
+                <Link href="/signup" className="w-full sm:w-auto">
+                  <Button variant="primary" width="w-full sm:w-[180px]">
+                    Get Started
+                  </Button>
+                </Link>
+              )}
               <Link
                 href="/about"
                 className="text-sm font-semibold leading-6 text-white group flex items-center gap-1 hover:text-indigo-400 transition-colors"
@@ -161,7 +168,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="relative py-10 bg-black/30 border-y border-white/5">
+      <div className="relative py-10 border-white/5">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center mb-16">
             <h2 className="text-base font-semibold leading-7 text-indigo-400">
@@ -178,10 +185,10 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
+            {features.map((feature, idx) => (
               <div
-                key={index}
-                className="relative group bg-white/5 border border-white/10 p-8 rounded-2xl hover:bg-white/10 transition-colors"
+                key={idx}
+                className="relative group bg-black/15 backdrop-blur-md border border-white/10 p-8 rounded-2xl hover:bg-white/10 transition-colors"
               >
                 <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                   <feature.icon className={`text-9xl ${feature.color.icon}`} />

@@ -16,12 +16,6 @@ const projectTimeline = [
   { id: 4, name: "Reliability Uptime", value: "99.9%" },
 ];
 const team = [
-  // {
-  //   name: "Nwachukwu Ekeledirichukwu",
-  //   role: "Founder / Lead Engineer",
-  //   location: "Enugu, Nigeria",
-  //   imageUrl: "/me.png",
-  // },
   {
     name: "Google Gemini",
     role: "Co-Pilot, Debugger & UI Architect",
@@ -41,7 +35,7 @@ export default function About() {
     <div className="relative z-10 w-full text-white font-sans selection:bg-indigo-500/30 overflow-hidden">
       <div className="relative isolate pt-14 md:pt-25">
         <div
-          className="absolute inset-y-0 right-1/2 -z-10 -mr-96 w-[200%] origin-top-right skew-x-[-30deg] bg-white/5 shadow-xl shadow-indigo-600/10 ring-1 ring-indigo-50 sm:-mr-80 lg:-mr-96"
+          className="absolute inset-y-0 right-1/2 -z-10 -mr-96 w-[200%] origin-top-right skew-x-[-30deg] bg-white/5 shadow-xl backdrop-blur-sm shadow-indigo-600/10 ring-1 ring-indigo-50 sm:-mr-80 lg:-mr-96"
           aria-hidden="true"
         />
 

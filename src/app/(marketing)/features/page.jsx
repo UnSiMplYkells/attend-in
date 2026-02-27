@@ -98,11 +98,11 @@ export default function FeaturesPage() {
       <div className="pt-3 mb-20 sm:pt-6 sm:mb-25">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mx-auto max-w-2xl lg:max-w-none">
-            <dl className="grid max-w-xl grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-16 sm:max-w-none lg:grid-cols-3">
+            <dl className="grid max-w-xl grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-10 sm:max-w-none lg:grid-cols-3">
               {features.map((feature) => (
                 <div
                   key={feature.name}
-                  className="flex flex-col bg-white/5 p-6 rounded-2xl border border-white/5 hover:bg-white/10 transition-colors"
+                  className="flex flex-col bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/5 hover:bg-white/10 transition-colors"
                 >
                   <dt className="flex items-center gap-x-3 text-base font-bold leading-7 text-white mb-2">
                     <feature.icon
