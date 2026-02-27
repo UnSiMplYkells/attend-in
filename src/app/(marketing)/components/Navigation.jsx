@@ -1,13 +1,15 @@
 "use client"
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { useUser } from "@/hooks/query/useUser";
 import Link from "next/link";
 import { Twirl as Hamburger } from "hamburger-react";
 import Button from "@/app/components/ui/Button";
 
 export default function Navigation() {
   const pathName = usePathname()
-  const [isOpen, setOpen] = useState(false);
+  const [ isOpen, setOpen ] = useState(false);
+  const { isAuthenticated } = useUser();
 
   useEffect(() => {
     if (isOpen) {
@@ -31,8 +33,7 @@ export default function Navigation() {
             </Link>
           </div>
           <div className="flex items-center gap-1  text-sm font-medium text-gray-200">
-            <Link
-              href="/features"
+            <Link href="/features"
               className={`${
                 pathName === "/features"
                   ? "bg-indigo-600/60"
@@ -41,8 +42,7 @@ export default function Navigation() {
             >
               Features
             </Link>
-            <Link
-              href="/about"
+            <Link href="/about"
               className={`${
                 pathName === "/about"
                   ? "bg-indigo-600/60"
@@ -51,8 +51,7 @@ export default function Navigation() {
             >
               About
             </Link>
-            <Link
-              href="/contact"
+            <Link href="/contact"
               className={`${
                 pathName === "/contact"
                   ? "bg-indigo-600/60"
@@ -61,11 +60,10 @@ export default function Navigation() {
             >
               Support
             </Link>
-            <Link
-              href="/login"
+            <Link href={isAuthenticated ? "/dashboard" : "/login"}
               className="ml-2 flex items-center gap-2 rounded-full bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition-all hover:bg-indigo-500 hover:shadow-lg hover:shadow-indigo-500/20 active:scale-95"
             >
-              Login &#8594;
+              {isAuthenticated ? "Dashboard" : "Login"} &#8594;
             </Link>
           </div>
         </nav>
@@ -107,9 +105,10 @@ export default function Navigation() {
             </div>
           </div>
 
+          {/* mobile view navigation */}
+
           <div className="flex flex-col gap-3">
-            <Link
-              href="/features"
+            <Link href="/features"
               onClick={() => setOpen(false)}
               className={`text-2xl font-medium transition-colors py-4 px-8 bg-black/30 hover:bg-black/60 ${
                 pathName === "/features"
@@ -119,8 +118,7 @@ export default function Navigation() {
             >
               Features
             </Link>
-            <Link
-              href="/about"
+            <Link href="/about"
               onClick={() => setOpen(false)}
               className={`text-2xl font-medium transition-colors py-4 px-8 bg-black/30 hover:bg-black/60 ${
                 pathName === "/about"
@@ -130,8 +128,7 @@ export default function Navigation() {
             >
               About
             </Link>
-            <Link
-              href="/contact"
+            <Link href="/contact"
               onClick={() => setOpen(false)}
               className={`text-2xl font-medium transition-colors py-4 px-8 bg-black/30 hover:bg-black/60 ${
                 pathName === "/contact"
@@ -142,7 +139,9 @@ export default function Navigation() {
               Support
             </Link>
 
-            <Button variant="primary">Login &#8594;</Button>
+            <Link href={isAuthenticated ? "/dashboard" : "/login"} onClick={() => setOpen(false)}>
+              <Button variant="primary">{isAuthenticated ? "Dashboard" : "Login"} &#8594;</Button>
+            </Link>
           </div>
         </div>
       </div>
