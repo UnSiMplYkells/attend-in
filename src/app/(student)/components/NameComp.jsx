@@ -34,7 +34,9 @@ export default function NameComp({ collapsedOnMobile = false, isDrawerOpen }) {
         {isUserLoading ? (
           <Skeleton circle width={40} height={40} />
         ) : (
-          <div className="size-10 shrink-0 rounded-full bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold shadow-md">
+          <div className="size-10 shrink-0 rounded-full bg-linear-to-br from-indigo-500 
+                        to-purple-600 flex items-center justify-center text-white font-bold 
+                        shadow-md">
             {initials}
           </div>
         )}

@@ -1,8 +1,8 @@
 import SidebarII from "./components/SidebarII";
-import { requireRole } from "@/lib/server/reuireUser";
+import { requireRole } from "@/lib/server/requireUser";
 
 export default async function ClassRepAdminLayout({ children }) {
-  await requireRole();
+  // await requireRole();
 
   return (
     <div className="flex h-full w-full overflow-hidden">

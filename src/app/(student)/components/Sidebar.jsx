@@ -45,9 +45,9 @@ export default function Sidebar() {
 
   const getLinkClasses = (path) => {
     const isActive = pathname === path;
-    return `flex items-center gap-3 p-3 rounded-sm transition-all duration-200 group ${
+    return `flex items-center gap-3 p-3 transition-all duration-200 group ${
       isActive
-        ? " text-white bg-white/20 shadow-md shadow-white/20"
+        ? " text-white bg-white/20 "
         : "text-gray-300 hover:bg-white/10 hover:text-white"
     }`;
   };
@@ -64,7 +64,7 @@ export default function Sidebar() {
           </button>
         </div>
 
-        <nav className="flex flex-col pt-3 md:ml-3 gap-2 flex-1 mt-4 sm:mt-0">
+        <nav className="flex flex-col pt-3 ml-3 mr-3 gap-2 flex-1 mt-4 sm:mt-0">
           {links.map((link) => (
             <Link
               key={link.label}
@@ -80,7 +80,7 @@ export default function Sidebar() {
           ))}
         </nav>
 
-        <div className="pb-4 sm:pl-4 border-t border-white/5">
+        <div className="pb-4 pt-4 sm:pl-4 border-t border-white/5">
           <NameComp isDrawerOpen={isDrawerOpen} collapsedOnMobile={true} />
         </div>
       </div>
@@ -127,7 +127,7 @@ export default function Sidebar() {
             ))}
           </nav>
 
-          <div className="p-4 border-t border-white/20 bg-[#0f172a]/50">
+          <div className="p-4 mb-3 border-t  bg-[#0f172a]/50">
             <NameComp isDrawerOpen={isDrawerOpen} collapsedOnMobile={false} />
           </div>
         </div>

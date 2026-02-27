@@ -17,7 +17,7 @@ const DAY_MAP = {
   SUNDAY: 7,
 };
 
-//converts "8am" to "08:00:00", format understandebale for supabase
+//converts "8am" to "08:00:00", format understandable for supabase
 function convertTo24Hour(timeStr) {
   if (!timeStr) return null;
 
@@ -101,7 +101,7 @@ export default function CrUploadsPage(){
 const processTimetableMatrix = async (rows, headers) => {
   let successCount = 0;
 
-  // --- 1. Identify Time Columns dynamically ---
+  // 1. Identify Time Columns dynamically
   const timeColumns = [];
   headers.forEach((header) => {
     const timeRange = parseHeaderRange(header);
@@ -119,18 +119,18 @@ const processTimetableMatrix = async (rows, headers) => {
     return;
   }
 
-  // --- 2. Build class map for fast lookup ---
+  // 2. Build class map for fast lookup
   const classMap = new Map(
     classCache.map((c) => [c.course_code.replace(/\s/g, "").toUpperCase(), c])
   );
 
-  // --- 3. Process Rows ---
+  // 3. Process Rows
   for (const row of rows) {
     const dayName = row["DAY"]?.toString().toUpperCase().trim();
     const dayInt = DAY_MAP[dayName];
     if (!dayInt) continue;
 
-    // --- STEP A: Collect all valid slots for this day ---
+    // STEP A: Collect all valid slots for this day
     let dailySlots = [];
 
     for (const col of timeColumns) {
@@ -158,7 +158,7 @@ const processTimetableMatrix = async (rows, headers) => {
 
     if (dailySlots.length === 0) continue;
 
-    // --- STEP B: Sort and merge consecutive slots ---
+    // STEP B: Sort and merge consecutive slots
     dailySlots.sort((a, b) => a.start.localeCompare(b.start));
     const mergedSlots = [];
     let currentSlot = dailySlots[0];
@@ -177,7 +177,7 @@ const processTimetableMatrix = async (rows, headers) => {
     }
     mergedSlots.push(currentSlot);
 
-    // --- STEP C: Batch Insert into Supabase ---
+    // STEP C: Batch Insert into Supabase
     const payload = mergedSlots.map((slot) => ({
       day_of_week: dayInt,
       start_time: slot.start,

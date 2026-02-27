@@ -23,9 +23,6 @@ export default function page() {
 
   const { activeAtdSession } = useGetActiveAtdSession(userClassIds);
   const isAtdActivated = activeAtdSession?.isActivated;
-
-  console.log("Active attendance session:", activeAtdSession);
-  console.log("if attendance is started", attendanceStarted)
   
   const { setAtdSession, issetAtdSessionLoading } = useSetAtdSessions();
 
@@ -169,7 +166,7 @@ export default function page() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
         {userClasses?.map((cls) => {
           let isActive = currentClass?.some(
             (cc) =>
@@ -208,13 +205,12 @@ export default function page() {
                       }`}
                   >
                     {isActive ? "Scheduled Now" : "Inactive"}
-                    {isAtdActivated && (
-                      <span className="flex items-center gap-1 text-red-400 text-xs font-bold animate-pulse">
-                        <HiOutlineStatusOnline /> LIVE
-                      </span>
-                    )}
                   </span>
-
+                  {isAtdActivated && (
+                    <span className="flex items-center gap-1 text-red-400 text-xs font-bold animate-pulse">
+                      <HiOutlineStatusOnline /> LIVE
+                    </span>
+                  )}
                   {cls.latitude && cls.longitude && (
                     <div className="flex items-center align gap-px text-[10px] leading-none text-gray-400 font-mono bg-black/20 px-2 py-2 rounded border border-white/5">
                       <MdLocationOn className="text-gray-500 text-xs" />
@@ -240,13 +236,7 @@ export default function page() {
                     onClick={() => handleStartAttendance(cls)}
                     disabled={issetAtdSessionLoading || activeAtdSession}
                   >
-                    {issetAtdSessionLoading ? (
-                      <Loader />
-                    ) : activeAtdSession ? (
-                      "View QR Code"
-                    ) : (
-                      "Start Session"
-                    )}
+                    {issetAtdSessionLoading ? <Loader /> : ( activeAtdSession ? "View QR Code" : "Start Session")}
                   </Button>
                 ) : (
                   <button
