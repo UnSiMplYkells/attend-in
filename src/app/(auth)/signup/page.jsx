@@ -4,10 +4,10 @@ import ThemeToggle from "@/app/components/ThemeToggle";
 import AuthForm from "../AuthForm";
 import { usePathname } from "next/navigation";
 
-// const PixelBlast = dynamic(() => import("@/app/components/ui/PixelBlast"), {
-//   ssr: false, // Three.js usually relies on 'window', so disable SSR
-//   loading: () => <div className="bg-black w-full h-full" />, // Placeholder
-// });
+const PixelBlast = dynamic(() => import("@/app/components/ui/PixelBlast"), {
+  ssr: false,
+  loading: () => <div className="bg-black w-full h-full" />,
+});
 
 export default function Authenticate() {
   const pathname = usePathname();
@@ -15,7 +15,7 @@ export default function Authenticate() {
   return (
     <div className="relative w-full h-screen flex items-center justify-center ">
       <AuthForm pathname={pathname} />
-      {/* <PixelBlast
+      <PixelBlast
         className="absolute inset-0 z-0 "
         variant="square"
         pixelSize={6}
@@ -34,7 +34,7 @@ export default function Authenticate() {
         speed={0.6}
         edgeFade={0}
         transparent
-      /> */}
+      />
     </div>
   );
 }

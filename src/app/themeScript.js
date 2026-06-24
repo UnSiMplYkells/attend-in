@@ -18,10 +18,10 @@ export default function ThemeScript() {
       return;
     }
 
-    // Default is dark
+    //default's to dark
     document.documentElement.classList.add("dark");
 
-    // Override with system preference if desired
+    // Override with system preference if available
     const prefersLight = window.matchMedia(
       "(prefers-color-scheme: light)"
     ).matches;

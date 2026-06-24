@@ -1,7 +1,6 @@
 import "./globals.css";
 import Providers from "./providers";
 import ThemeScript from "./themeScript";
-import { Toaster } from "react-hot-toast";
 
 export const metadata = {
   title: "Attend•in",

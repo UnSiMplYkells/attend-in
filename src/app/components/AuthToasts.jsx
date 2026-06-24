@@ -1,9 +1,9 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { toast } from "react-hot-toast";
 
-export default function AuthToast() {
+function AuthToastContent() {
   const params = useSearchParams();
   const error = params.get("error");
 
@@ -23,4 +23,12 @@ export default function AuthToast() {
   }, [error]);
 
   return null;
+}
+
+export default function AuthToast() {
+  return (
+    <Suspense fallback={null}>
+      <AuthToastContent />
+    </Suspense>
+  );
 }
