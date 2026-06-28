@@ -3,6 +3,8 @@ import { requireUser } from "@/lib/server/requireUser"
 import Sidebar from "./components/Sidebar"
 import Header from "./components/Header"
 import AuthToast from "../components/AuthToasts";
+import PushNotificationManager from "./class-rep/components/PermissionsManager";
+import BrowserWarningBanner from "./components/BrowserBanner";
 
 // const ParticlesBackground = dynamic(
 //   () => import("./components/ParticlesBackground"),
@@ -27,7 +29,9 @@ export default async function DashboardLayout({ children }) {
             <Sidebar />
           </div>
           <div className="flex-1 overflow-y-auto relative backdrop-blur-sm">
+            <BrowserWarningBanner />
             {children}
+            <PushNotificationManager />
           </div>
         </div>
       </div>

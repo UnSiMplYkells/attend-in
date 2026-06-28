@@ -69,7 +69,7 @@ Deno.serve(async (req) => {
     }
 
     //geo-Fencing funciton
-    const MAX_DISTANCE = 50; // meters
+    const MAX_DISTANCE = 25; // meters
     const distance = calculateDistance(
       latitude, 
       longitude, 
