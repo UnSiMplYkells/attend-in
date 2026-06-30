@@ -44,8 +44,9 @@ export async function getActiveAtdSession({ classIds, timeNow, nowNow }) {
   //gets active attendance session for the particular user's classes according to todays date
   const { data: session, error } = await supabase
     .from("attendance_sessions")
-    .select("*, timetables!timetable_id(*)")
+    .select("*, timetables!inner(*)")
     .in("class_id", ids)
+    .eq("timetables.is_active", true)
     .lte("timetables.start_time", timeNow)
     .gte("timetables.end_time", timeNow)
     .gte("window_start", todayISO)

@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { getCourses } from "@/lib/server/roster";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { addStudentToRoster, getCourses, removeStudentFromRoster } from "@/lib/server/roster";
 import { useUser } from "./useUser";
 
 export function useGetCourses() {
@@ -17,4 +17,27 @@ export function useGetCourses() {
     isCoursesLoading,
   };
 }
-  
+
+export function useAddStudentToCourse() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ courseId, studentId }) =>
+      addStudentToRoster(courseId, studentId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["classList"] });
+    },
+  });
+}
+
+export function useRemoveStudentFromCourse() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ courseId, studentId }) =>
+      removeStudentFromRoster(courseId, studentId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["classList"] });
+    },
+  });
+}

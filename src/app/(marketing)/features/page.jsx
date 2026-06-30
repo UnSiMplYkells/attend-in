@@ -7,6 +7,8 @@ import {
   MdInsights,
   MdCloudDone,
   MdSecurity,
+  MdSupportAgent,
+  MdOutlineNotificationsActive,
 } from "react-icons/md";
 
 export default function FeaturesPage() {
@@ -30,6 +32,12 @@ export default function FeaturesPage() {
       icon: MdQrCodeScanner,
     },
     {
+      name: "Push Notifications",
+      description:
+        "Instant alerts keep everyone informed. Students receive reminders when class starts, and when attendance time threshold is available.",
+      icon: MdOutlineNotificationsActive,
+    },
+    {
       name: "Anti-Spoofing Security",
       description:
         "Advanced checks prevent GPS mocking and location spoofing apps, ensuring the integrity of every attendance record.",
@@ -46,6 +54,12 @@ export default function FeaturesPage() {
       description:
         "All data is securely stored and synced via Supabase, ensuring records are never lost and accessible from any authorized device.",
       icon: MdCloudDone,
+    },
+    {
+      name: "Active Support",
+      description:
+        "Our support team is always ready to help. Reach out via email or phone for any assistance you need or questions you have.",
+      icon: MdSupportAgent,
     },
   ];
 

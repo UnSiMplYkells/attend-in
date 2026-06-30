@@ -7,7 +7,7 @@ export async function getUsersClasses(courseId){
 
   if (!courseId || courseId.length === 0) return [];
 
-  //uses users registered classes course id to actually get thier cregistered classes
+  //uses users registered classes course id to actually get their registered classes
   const { data, error } = await supabase
     .from("classes")
     .select("*")
@@ -30,6 +30,7 @@ export async function getCurrentClass(courseId) {
   const { data, error } = await supabase
     .from("timetables")
     .select("*, classes(course_code, latitude, longitude)")
+    .eq("is_active", true)
     .in("class_id", courseId)
     .lte("start_time", timeNow)
     .gte("end_time", timeNow);

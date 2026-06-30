@@ -38,17 +38,17 @@ const features = [
       icon: "text-green-500",
     },
   },
-  {
-    title: "Device Binding",
-    description:
-      "One Student, One Device. Accounts are locked to a specific phone. A student cannot login on a friend's phone to mark attendance.",
-    icon: MdSecurity,
-    color: {
-      text: "text-purple-400",
-      bg: "bg-purple-500/20",
-      icon: "text-purple-500",
-    },
-  },
+  // {
+  //   title: "Device Binding",
+  //   description:
+  //     "One Student, One Device. Accounts are locked to a specific phone. A student cannot login on a friend's phone to mark attendance.",
+  //   icon: MdSecurity,
+  //   color: {
+  //     text: "text-purple-400",
+  //     bg: "bg-purple-500/20",
+  //     icon: "text-purple-500",
+  //   },
+  // },
   {
     title: "Smart Analytics",
     description:
@@ -60,28 +60,28 @@ const features = [
       icon: "text-cyan-500",
     },
   },
-  {
-    title: "Instant Reports",
-    description:
-      "Class Reps get real-time data. Generate Excel-compatible reports instantly for submission to lecturers or administration.",
-    icon: MdSpeed,
-    color: {
-      text: "text-red-400",
-      bg: "bg-red-500/20",
-      icon: "text-red-500",
-    },
-  },
-  {
-    title: "Active Support",
-    description:
-      "Our support team is always ready to help. Reach out via email or phone for any assistance you need or questions you have.",
-    icon: MdSupportAgent,
-    color: {
-      text: "text-amber-400",
-      bg: "bg-amber-500/20",
-      icon: "text-amber-500",
-    },
-  },
+  // {
+  //   title: "Instant Reports",
+  //   description:
+  //     "Class Reps get real-time data. Generate Excel-compatible reports instantly for submission to lecturers or administration.",
+  //   icon: MdSpeed,
+  //   color: {
+  //     text: "text-red-400",
+  //     bg: "bg-red-500/20",
+  //     icon: "text-red-500",
+  //   },
+  // },
+  // {
+  //   title: "Active Support",
+  //   description:
+  //     "Our support team is always ready to help. Reach out via email or phone for any assistance you need or questions you have.",
+  //   icon: MdSupportAgent,
+  //   color: {
+  //     text: "text-amber-400",
+  //     bg: "bg-amber-500/20",
+  //     icon: "text-amber-500",
+  //   },
+  // },
 ];
 
 export default function Home() {
@@ -206,6 +206,29 @@ export default function Home() {
                 </p>
               </div>
             ))}
+          </div>
+
+          <div className="mt-16 flex justify-center">
+            <Link
+              href="/features"
+              className="group inline-flex items-center justify-center gap-2 rounded-full border border-white/10 bg-indigo-400/30 px-8 py-3.5 text-sm font-semibold text-white backdrop-blur-md transition-all duration-300 hover:bg-white/10 hover:border-white/20 hover:shadow-[0_0_20px_rgba(129,140,248,0.15)]"
+            >
+              See All Features
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
+                className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+                />
+              </svg>
+            </Link>
           </div>
         </div>
       </div>

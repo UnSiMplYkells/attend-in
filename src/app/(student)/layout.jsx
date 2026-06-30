@@ -3,7 +3,7 @@ import { requireUser } from "@/lib/server/requireUser"
 import Sidebar from "./components/Sidebar"
 import Header from "./components/Header"
 import AuthToast from "../components/AuthToasts";
-import PushNotificationManager from "./class-rep/components/PermissionsManager";
+import PushNotificationManager from "./components/PermissionsManager";
 import BrowserWarningBanner from "./components/BrowserBanner";
 
 // const ParticlesBackground = dynamic(

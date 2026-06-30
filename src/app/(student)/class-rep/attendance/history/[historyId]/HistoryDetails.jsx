@@ -19,9 +19,9 @@ import {
 import Button from "@/app/components/ui/Button";
 import { CiExport } from "react-icons/ci";
 import { MdDateRange, MdPeople, MdTrendingUp } from "react-icons/md";
-import { FiSearch } from "react-icons/fi";
+import { FiArrowLeft, FiSearch } from "react-icons/fi";
+import Link from "next/link";
 
-// --- Subcomponents for Loaders ---
 const SkeletonStats = () => (
   <div className="flex gap-4 animate-pulse">
     <div className="h-8 w-32 bg-white/10 rounded"></div>
@@ -87,7 +87,7 @@ export default function HistoryDetails({ historyId }) {
           attendees: count || 0,
         };
       })
-      .reverse(); // Chronological order
+      .reverse(); 
   }, [data]);
 
   // Extract attendees for the currently selected date
@@ -161,13 +161,20 @@ export default function HistoryDetails({ historyId }) {
     utils.book_append_sheet(wb, ws, "Attendance");
     writeFile(wb, `${courseCode}-Attendance-${selectedDate}.xlsx`);
   }
-
   return (
     <div className="flex flex-col h-full bg-black/80 text-white pb-10">
-      <div className="flex-none bg-[#0f172a] border-b border-white/5 px-6 py-6 z-30">
+      <div className="flex-none bg-[#0f172a] border-b border-white/5 px-6 py-3 z-30">
         <div className="max-w-7xl mx-auto w-full">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
+              <Link
+                href="/class-rep/attendance/reports"
+                className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors mb-4"
+              >
+                <FiArrowLeft className="w-4 h-4" />
+                Back to Reports
+              </Link>
+
               <h1 className="text-3xl font-bold text-white tracking-tight mb-2">
                 {courseCode}
               </h1>
@@ -196,7 +203,6 @@ export default function HistoryDetails({ historyId }) {
               )}
             </div>
 
-            {/* Date Selector */}
             {!isHistoricalSessionLoading && atdAmount > 0 && (
               <div className="flex flex-col gap-1 w-full md:w-auto">
                 <label className="text-xs text-gray-500 uppercase font-semibold">
@@ -223,7 +229,6 @@ export default function HistoryDetails({ historyId }) {
       </div>
 
       <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 mt-6 flex-1 flex flex-col gap-8">
-        {/* Analytics Chart */}
         {isHistoricalSessionLoading ? (
           <SkeletonChart />
         ) : atdAmount > 0 ? (
@@ -283,7 +288,6 @@ export default function HistoryDetails({ historyId }) {
           </div>
         ) : null}
 
-        {/* Action Bar & Table */}
         {atdAmount > 0 ? (
           <div className="bg-white/5 border border-white/5 rounded-xl overflow-hidden shadow-2xl backdrop-blur-sm flex flex-col">
             {/* Toolbar */}
@@ -295,7 +299,6 @@ export default function HistoryDetails({ historyId }) {
                 </span>
               </div>
 
-              {/* Replaced: Added shrink-0 to prevent squishing, and w-full wrapper for the button */}
               <div className="flex flex-col sm:flex-row flex-wrap gap-3 w-full lg:w-auto shrink-0">
                 <div className="relative group w-full sm:flex-1 lg:w-64 lg:flex-none">
                   <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
