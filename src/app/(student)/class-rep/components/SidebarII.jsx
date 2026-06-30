@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
-import { RiContactsBook3Fill } from "react-icons/ri";
+import { RiContactsBook3Fill, RiCalendarScheduleLine } from "react-icons/ri";
 import { AiOutlineSchedule } from "react-icons/ai";
 import { MdControlPointDuplicate } from "react-icons/md";
 import { BiSolidReport } from "react-icons/bi";
@@ -37,14 +37,19 @@ const links = [
     label: "Attendance history",
   },
   {
-    href: "/class-rep/all-students",
-    icon: RiContactsBook3Fill,
-    label: "All Students",
-  },
-  {
     href: "/class-rep/courses",
     icon: AiOutlineSchedule,
     label: "courses",
+  },
+  {
+    href: "/class-rep/timetable",
+    icon: RiCalendarScheduleLine,
+    label: "timetable",
+  },
+  {
+    href: "/class-rep/all-students",
+    icon: RiContactsBook3Fill,
+    label: "All Students",
   },
   {
     href: "/class-rep/uploads",

@@ -81,7 +81,7 @@ export default function ReportsPage() {
                       </span>
                     </div>
                     <h3 className="text-2xl font-bold text-white">
-                      {activeClass.course_name || "General Course"}
+                      {activeClass.course_title || "General Course"}
                     </h3>
                     <p className="text-sm text-gray-400 mt-1 flex items-center gap-1">
                       <MdAccessTime /> Ends at{" "}
@@ -127,7 +127,7 @@ export default function ReportsPage() {
                         {cls.course_code}
                       </h3>
                       <p className="text-sm text-gray-400 line-clamp-1">
-                        {cls.course_name || "No description available"}
+                        {cls.course_title || "No description available"}
                       </p>
                     </div>
 

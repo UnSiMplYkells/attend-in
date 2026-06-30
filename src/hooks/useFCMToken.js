@@ -7,27 +7,6 @@ import toast from "react-hot-toast";
 import { createClient } from "@/app/utils/supabase/client";
 import { fetchToken, messaging } from "../../firebase";
 
-// async function getNotificationPermissionAndToken() {
-//   if (!("Notification" in window)) {
-//     console.info("This browser does not support desktop notification");
-//     return null;
-//   }
-
-//   if (Notification.permission === "granted") {
-//     return await fetchToken();
-//   }
-
-//   if (Notification.permission !== "denied") {
-//     const permission = await Notification.requestPermission();
-//     if (permission === "granted") {
-//       return await fetchToken();
-//     }
-//   }
-
-//   console.log("Notification permission not granted.");
-//   return null;
-// }
-
 async function getNotificationPermissionAndToken() {
   if (!("Notification" in window)) {
     console.info("This browser does not support desktop notification");
@@ -39,9 +18,6 @@ async function getNotificationPermissionAndToken() {
     return await fetchToken();
   }
 
-  console.log(
-    "Notification permission not granted yet. Waiting for user action.",
-  );
   return null;
 }
 
@@ -129,14 +105,11 @@ const useFcmToken = () => {
     const setupListener = async () => {
       if (!token) return;
 
-      console.log(`onMessage registered with token ${token}`);
       const m = await messaging();
       if (!m) return;
 
       const unsubscribe = onMessage(m, (payload) => {
         if (Notification.permission !== "granted") return;
-
-        console.log("Foreground push data received:", payload);
         
         const title = payload.data?.title;
         const body = payload.data?.body;

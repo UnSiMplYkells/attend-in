@@ -1,4 +1,4 @@
-import PushNotificationManager from "./components/PermissionsManager";
+import PushNotificationManager from "../components/PermissionsManager";
 import SidebarII from "./components/SidebarII";
 import { requireRole } from "@/lib/server/requireUser";
 

@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { getStudents, getStudentsByDept } from "@/lib/server/students";
+import { getClassStudents, getStudents, getStudentsByDept } from "@/lib/server/students";
 
 export function useGetStudents(department, page = 1, searchTerm = "") {
   const {data, isLoading: isStudentsLoading, isPlaceholderData} = useQuery({
@@ -17,6 +17,47 @@ export function useGetStudents(department, page = 1, searchTerm = "") {
     isPlaceholderData,
   };
 }
+
+export function useGetClassStudents(
+  courseCode,
+  courseId,
+  page = 1,
+  searchTerm = "",
+) {
+  const {
+    data,
+    isLoading: isAllClassStudentsLoading,
+    isPlaceholderData,
+  } = useQuery({
+    queryKey: ["classList", courseCode, courseId, page, searchTerm],
+    queryFn: () => getClassStudents(courseId, page, searchTerm),
+    placeholderData: keepPreviousData,
+    staleTime: 3 * 60 * 1000, // 3 minutes
+    enabled: !!courseId,
+  });
+
+  return {
+    isAllClassStudentsLoading,
+    allClassStudents: data?.data ?? [],
+    count: data?.count ?? 0,
+    isPlaceholderData,
+  };
+}
+
+//bypassed pagination so as to download csv
+// export function useGetAllClassStudents(courseId) {
+//   const { isLoading: isExportLoading, data: exportData } = useQuery({
+//     queryKey: ["classListExport", courseId],
+//     queryFn: () => getAllClassStudents(courseId),
+//     enabled: !!courseId,
+//     staleTime: Infinity,
+//   });
+
+//   return {
+//     isExportLoading,
+//     exportData,
+//   };
+// }
 
 // for admin usage
 export function useGetStudentsByDept(department) {
