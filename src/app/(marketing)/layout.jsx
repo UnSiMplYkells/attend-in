@@ -45,21 +45,21 @@ export default function Layout({ children }) {
 
         {pathname !== "/" && (
           <header className="w-full">
-            <div className="mx-auto max-w-[1320px] px-4">
+            <div className="mx-auto max-w-[1440px] px-4">
               <Navigation />
             </div>
           </header>
         )}
 
         <main className="flex-1 w-full">
-          <div className="mx-auto max-w-[1320px] px-4">
+          <div className="mx-auto max-w-[1440px] px-4">
             {children}
           </div>
         </main>
 
         {pathname !== "/" && (
           <footer className="w-full">
-            <div className="mx-auto max-w-[1320px] px-4">
+            <div className="mx-auto max-w-[1440px] px-4">
               <Footer />
             </div>
           </footer>
