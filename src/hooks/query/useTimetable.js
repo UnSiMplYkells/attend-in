@@ -16,9 +16,8 @@ export function useTimetable() {
 export function useClearTimetable() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (ids) => clearAllTimetable(ids), // We are adding IDs here for Step 2
+    mutationFn: (ids) => clearAllTimetable(ids),
     onSuccess: () => {
-      // FIXED: Must be an object with 'queryKey'
       queryClient.invalidateQueries({ queryKey: ["timetable"] });
     },
   });

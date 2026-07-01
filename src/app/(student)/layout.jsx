@@ -22,7 +22,7 @@ export default async function DashboardLayout({ children }) {
       {/* remeber to return aprticles background */}
       {/* <ParticlesBackground /> */}
       <AuthToast />
-      <div className="flex flex-col relative max-w-[1380px] h-screen m-auto text-white overflow-hidden">
+      <div className="flex flex-col relative max-w-[1440px] h-screen m-auto text-white overflow-hidden">
         <Header />
         <div className="flex flex-1 overflow-hidden md:gap-3">
           <div className="flex-none w-12 sm:w-[200px] md:w-[30%] md:max-w-[220px] lg:w-[25%] xl:w-[18%] bg-black/85 sm:bg-black/20 sm:backdrop-blur-md border-r border-white/5  overflow-y-auto transition-all duration-300 scrollbar-hide">

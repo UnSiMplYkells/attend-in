@@ -451,9 +451,9 @@ export default function TimetablePage() {
         <Link
           href="/class-rep/uploads"
           className="px-6 py-3 border border-blue-400 text-white rounded-xs 
-             transition-all duration-300 ease-out
-             hover:bg-blue-600 hover:border-blue-600 hover:scale-105 
-             active:scale-95"
+            transition-all duration-300 ease-out
+            hover:bg-blue-600 hover:border-blue-600 hover:scale-105 
+            active:scale-95"
         >
           move to uploads
         </Link>
