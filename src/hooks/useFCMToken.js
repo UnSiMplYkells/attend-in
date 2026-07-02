@@ -29,7 +29,7 @@ const useFcmToken = () => {
   const retryLoadToken = useRef(0);
   const isLoading = useRef(false);
 
-  const loadToken = async () => {
+  async function loadToken(){
     if (isLoading.current) return;
 
     isLoading.current = true;
@@ -65,13 +65,6 @@ const useFcmToken = () => {
 
     setNotificationPermissionStatus(Notification.permission);
     setToken(fetchedToken);
-
-    // alert(
-    //   "MOBILE TOKEN:\n\n" +
-    //     fetchedToken.substring(0, 10) +
-    //     "..." +
-    //     fetchedToken.substring(fetchedToken.length - 10),
-    // );
 
     try {
       const supabase = createClient();

@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import StatCards from "./components/StatCards";
+import StatCards from "./components/dashboard/StatCards";
 import DashboardCharts from "./components/DashboardCharts";
-import QuickActions from "./components/QuickActions";
+import QuickActions from "./components/dashboard/QuickActions";
 import { useDashboardData } from "@/hooks/query/useDashboard";
 import { FiClock } from "react-icons/fi";
 

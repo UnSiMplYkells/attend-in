@@ -42,7 +42,6 @@ const messaging = firebase.messaging();
       payload,
     );
 
-    // Since we use data-only payloads, everything lives inside payload.data
     const notificationTitle = payload.data.title;
     const link = payload.data.link || "/";
 
@@ -52,7 +51,6 @@ const messaging = firebase.messaging();
       data: { url: link },
     };
 
-    // This is now the ONLY notification that will render
     return self.registration.showNotification(
       notificationTitle,
       notificationOptions,
