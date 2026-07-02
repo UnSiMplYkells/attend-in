@@ -30,6 +30,7 @@ export default function AuthForm({ pathname }) {
 
   const [verifyingMatricNo, setVerifyingMatricNo] = useState(false);
   const [isVerifyingRep, setIsVerifyingRep] = useState(false);
+  const [isResetLoading, setIsResetLoading] = useState(false);
 
   async function verifyMatric(matric) {
     const { data, error } = await supabase.rpc("check_matric_exists", {
@@ -44,6 +45,7 @@ export default function AuthForm({ pathname }) {
     // setVerifyingMatricNo(true)
     return data === true;
   }
+
   async function verifyDevice(matric){
     const { data: checkDevice, error: checkDeviceError } = await supabase
       .from("users")
@@ -73,7 +75,8 @@ export default function AuthForm({ pathname }) {
         },
       }
     );
-  };
+  }
+
   async function handleClassRepSignup(contact, otp){
     setOpen(false);
     setIsVerifyingRep(true);
@@ -136,7 +139,7 @@ export default function AuthForm({ pathname }) {
     } finally {
       setIsVerifyingRep(false);
     }
-  };
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -265,6 +268,32 @@ export default function AuthForm({ pathname }) {
         adminLogin({email, password})
       }
     }
+
+    if (pathname === "/forgot-password") {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        setErrors({ email: "Invalid email. Enter a valid email address" });
+        return;
+      }
+
+      setIsResetLoading(true);
+      try {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/reset-password`,
+        });
+
+        if (error) {
+          toast.error(error.message);
+        } else {
+          toast.success("Reset link sent! Check your email.");
+          setEmail("");
+        }
+      } catch (err) {
+        toast.error("Something went wrong. Please try again.");
+      } finally {
+        setIsResetLoading(false);
+      }
+    }
   }
 
   return (
@@ -272,14 +301,25 @@ export default function AuthForm({ pathname }) {
       <div className="absolute z-10 bg-black/30 backdrop-blur-sm w-full sm:max-w-md h-screen sm:h-fit flex flex-col justify-center content-center px-6 py-8 lg:px-8 ">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img className="mx-auto h-20 w-auto" src="/logo5.png" alt="logo" />
-          <h2 className="mt-5 text-center text-2xl font-bold leading-9 tracking-tight text-white">
+          <h2 className="mt-4 text-center text-2xl font-bold leading-9 tracking-tight text-gray-50">
             {pathname === "/signup" && "Sign up for an account"}
             {pathname === "/login" && "Log in to your account"}
             {pathname === "/admin/login" && "Log in with admin priviledges"}
+            {pathname === "/forgot-password" && "Forgot your Password?"}
           </h2>
+
+          {pathname === "/forgot-password" && (
+            <h4 className="mt-3 text-[11px] text-amber-200 font-bold">
+              We've got you covered. <br />
+              Input your signup email, and we will send you the recovery link to
+              the.
+            </h4>
+          )}
         </div>
 
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        <div
+          className={`${pathname === "/forgot-password" ? "mt-4" : "mt-10"} sm:mx-auto sm:w-full sm:max-w-sm`}
+        >
           <form className="space-y-6" onSubmit={handleSubmit}>
             {pathname !== "/login" && (
               <div>
@@ -310,7 +350,7 @@ export default function AuthForm({ pathname }) {
               </div>
             )}
 
-            {pathname !== "/admin/login" && (
+            {pathname === "/login" || pathname === "/signup" ? (
               <div>
                 <label
                   htmlFor="matricNumber"
@@ -339,57 +379,65 @@ export default function AuthForm({ pathname }) {
                   )}
                 </div>
               </div>
+            ) : (
+              ""
             )}
 
-            <div>
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium leading-6 text-white"
-                >
-                  Password
-                </label>
-                <div className="text-sm">
-                  {pathname === "/login" && (
-                    <Link
-                      href="#"
-                      className="font-semibold text-indigo-400 hover:text-indigo-300"
-                    >
-                      Forgot password?
-                    </Link>
+            {pathname !== "/forgot-password" && (
+              <div>
+                <div className="flex items-center justify-between">
+                  <label
+                    htmlFor="password"
+                    className="block text-sm font-medium leading-6 text-white"
+                  >
+                    Password
+                  </label>
+                  <div className="text-sm">
+                    {pathname === "/login" && (
+                      <Link
+                        href="/forgot-password"
+                        className="font-semibold text-indigo-400 hover:text-indigo-300"
+                      >
+                        Forgot password?
+                      </Link>
+                    )}
+                  </div>
+                </div>
+                <div className="mt-2">
+                  <input
+                    id="password"
+                    type="password"
+                    autoComplete="current-password"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      setErrors((prev) => ({ ...prev, password: "" }));
+                    }}
+                    required
+                    className="block w-full rounded-md border border-transparent bg-white/5 py-2 px-3 text-white shadow-sm placeholder:text-gray-400 focus:border-green-500 focus:outline-none sm:text-md sm:leading-6"
+                  />
+                  {errors.password && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.password}
+                    </p>
                   )}
                 </div>
               </div>
-              <div className="mt-2">
-                <input
-                  id="password"
-                  type="password"
-                  autoComplete="current-password"
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                    setErrors((prev) => ({ ...prev, password: "" }));
-                  }}
-                  required
-                  className="block w-full rounded-md border border-transparent bg-white/5 py-2 px-3 text-white shadow-sm placeholder:text-gray-400 focus:border-green-500 focus:outline-none sm:text-md sm:leading-6"
-                />
-                {errors.password && (
-                  <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-                )}
-              </div>
-            </div>
+            )}
 
             <Button variant="primary" type="submit">
               {isSignupLoading ||
               verifyingMatricNo ||
               isLoginLoading ||
               isAdminLoginLoading ||
-              isVerifyingRep ? (
+              isVerifyingRep ||
+              isResetLoading ? (
                 <Loader />
               ) : (
                 <>
                   {pathname === "/signup" && "Sign up"}
-                  {pathname === ("/login" || "/admin/login)") && "Log in"}
+                  {(pathname === "/login" || pathname === "/admin/login") && "Log in"}
+                  {pathname === "/forgot-password" && "Reset Password"}
                 </>
               )}
             </Button>
