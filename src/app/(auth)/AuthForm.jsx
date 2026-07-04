@@ -32,6 +32,13 @@ export default function AuthForm({ pathname }) {
   const [isVerifyingRep, setIsVerifyingRep] = useState(false);
   const [isResetLoading, setIsResetLoading] = useState(false);
 
+  let isLoading = isSignupLoading ||
+              verifyingMatricNo ||
+              isLoginLoading ||
+              isAdminLoginLoading ||
+              isVerifyingRep ||
+              isResetLoading
+
   async function verifyMatric(matric) {
     const { data, error } = await supabase.rpc("check_matric_exists", {
       matric_input: matric,
@@ -425,13 +432,8 @@ export default function AuthForm({ pathname }) {
               </div>
             )}
 
-            <Button variant="primary" type="submit">
-              {isSignupLoading ||
-              verifyingMatricNo ||
-              isLoginLoading ||
-              isAdminLoginLoading ||
-              isVerifyingRep ||
-              isResetLoading ? (
+            <Button variant="primary" type="submit" disabled={isLoading}>
+              { isLoading ? (
                 <Loader />
               ) : (
                 <>

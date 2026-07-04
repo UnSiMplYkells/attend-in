@@ -8,7 +8,7 @@ export default function Modal({ open, onClose, children }) {
   return (
     <ModalPortal>
       <div
-        className="text-white backdrop-blur-xs fixed inset-0 bg-black/30 flex justify-center items-center z-50"
+        className="text-white rounded-xs backdrop-blur-xs fixed inset-0 bg-black/30 flex justify-center items-center z-50"
         onClick={onClose}
       >
         <div

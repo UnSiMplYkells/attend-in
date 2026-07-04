@@ -2,7 +2,7 @@
 
 import React from "react";
 import StatCards from "./components/dashboard/StatCards";
-import DashboardCharts from "./components/DashboardCharts";
+import DashboardCharts from "./components/dashboard/DashboardCharts";
 import QuickActions from "./components/dashboard/QuickActions";
 import { useDashboardData } from "@/hooks/query/useDashboard";
 import { FiClock } from "react-icons/fi";

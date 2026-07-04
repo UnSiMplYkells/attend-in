@@ -31,7 +31,6 @@ export default function ScanPage() {
     isGetAtdRecordLoading,
     isFetched: isRecordFetched,
   } = useGetAtdRecord(user && sessionByQr ? sessionByQr?.id : null, user?.id);
-  console.log("Existing Record:", existingRecord);
 
   const { setAtdRecord, issetAtdRecordLoading } = useSetAtdRecord();
 

@@ -1,6 +1,7 @@
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useUser } from "@/hooks/query/useUser";
+import Link from "next/link";
 
 export default function NameComp({ collapsedOnMobile = false, isDrawerOpen }) {
   const { user, isLoading: isUserLoading } = useUser();
@@ -26,40 +27,46 @@ export default function NameComp({ collapsedOnMobile = false, isDrawerOpen }) {
 
   return (
     <SkeletonTheme baseColor="#313131" highlightColor="#525252">
-      <div
-        className={`${
-          isDrawerOpen ? "justify-start" : "justify-center"
-        } flex items-center sm:justify-start gap-3 overflow-hidden`}
+      <Link 
+        href="/profile"
       >
-        {isUserLoading ? (
-          <Skeleton circle width={40} height={40} />
-        ) : (
-          <div className="size-10 shrink-0 rounded-full bg-linear-to-br from-indigo-500 
-                        to-purple-600 flex items-center justify-center text-white font-bold 
-                        shadow-md">
-            {initials}
-          </div>
-        )}
-
         <div
-          className={`flex flex-col transition-all duration-300 ${
-            collapsedOnMobile ? "hidden sm:flex" : "flex"
-          }`}
+          className={`${
+            isDrawerOpen ? "justify-start" : "justify-center"
+          } flex items-center sm:justify-start gap-3 overflow-hidden cursor-pointer`}
         >
-          <span className="text-sm font-semibold text-white truncate max-w-[150px]">
-            {lastName && lastInitial ? (
-              <>
-                {lastName} {lastInitial}.
-              </>
-            ) : (
-              <Skeleton width={140} />
-            )}
-          </span>
-          <span className="text-xs text-gray-500 truncate">
-            {role || <Skeleton width={80} />}
-          </span>
+          {isUserLoading ? (
+            <Skeleton circle width={40} height={40} />
+          ) : (
+            <div
+              className="size-10 shrink-0 rounded-full bg-linear-to-br from-indigo-500 
+                        to-purple-600 flex items-center justify-center text-white font-bold 
+                        shadow-md"
+            >
+              {initials}
+            </div>
+          )}
+
+          <div
+            className={`flex flex-col transition-all duration-300 ${
+              collapsedOnMobile ? "hidden sm:flex" : "flex"
+            }`}
+          >
+            <span className="text-sm font-semibold text-white truncate max-w-[150px]">
+              {lastName && lastInitial ? (
+                <>
+                  {lastName} {lastInitial}.
+                </>
+              ) : (
+                <Skeleton width={140} />
+              )}
+            </span>
+            <span className="text-xs text-gray-500 truncate">
+              {role || <Skeleton width={80} />}
+            </span>
+          </div>
         </div>
-      </div>
+      </Link>
     </SkeletonTheme>
   );
 }
