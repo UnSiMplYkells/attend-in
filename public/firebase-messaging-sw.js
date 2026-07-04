@@ -37,10 +37,6 @@ const messaging = firebase.messaging();
 // });
 
   messaging.onBackgroundMessage((payload) => {
-    console.log(
-      "[firebase-messaging-sw.js] Received background data message ",
-      payload,
-    );
 
     const notificationTitle = payload.data.title;
     const link = payload.data.link || "/";
@@ -58,7 +54,6 @@ const messaging = firebase.messaging();
   });
 
 self.addEventListener("notificationclick", function (event) {
-  console.log("[firebase-messaging-sw.js] Notification click received.");
 
   event.notification.close();
 
@@ -78,7 +73,6 @@ self.addEventListener("notificationclick", function (event) {
         }
 
         if (clients.openWindow) {
-          console.log("OPENWINDOW ON CLIENT");
           return clients.openWindow(url);
         }
       }),

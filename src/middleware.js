@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 
-// Create a new ratelimiter that allows 8 requests per 10 seconds
 const ratelimit = new Ratelimit({
   redis: Redis.fromEnv(),
   limiter: Ratelimit.slidingWindow(8, "10 s"),
@@ -10,16 +9,13 @@ const ratelimit = new Ratelimit({
 });
 
 export async function middleware(request) {
-  // Only apply rate limiting to API routes and server actions
-  // (You don't want to rate limit people just clicking around standard pages)
   if (
     request.nextUrl.pathname.startsWith("/api") ||
     request.method === "POST"
   ) {
-    // Extract the user's IP address
+
     const ip = request.ip ?? "127.0.0.1";
 
-    // Check the IP against the rate limiter
     const { success, pending, limit, reset, remaining } =
       await ratelimit.limit(ip);
 

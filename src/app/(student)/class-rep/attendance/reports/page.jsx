@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import useStore from "@/store";
 import { useGetUsersClasses } from "@/hooks/query/useClasses";
 import { useGetActiveAtdSession } from "@/hooks/query/useAtdSessions";
-import GridSkeleton from "@/app/(student)/class-rep/components/dashboard/GridSkeleton";
+import GridSkeleton from "@/app/(student)/class-rep/components/GridSkeleton";
 import {
   MdInsights,
   MdClass,
