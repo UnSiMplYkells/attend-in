@@ -67,12 +67,12 @@ export default function NameComp({
               </>
             ) : (
               <>
-                <span className="text-sm font-semibold text-white truncate max-w-[150px]">
+                <span className="text-sm font-semibold text-theme truncate max-w-[150px]">
                   {parts.length >= 2 
                     ? `${lastName} ${lastInitial}.` 
                     : name || "Unknown User"}
                 </span>
-                <span className="text-xs text-gray-500 truncate">
+                <span className="text-xs text-muted-theme truncate">
                   {role}
                 </span>
               </>

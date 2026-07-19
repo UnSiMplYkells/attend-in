@@ -59,10 +59,10 @@ export default function SignupForm() {
     );
   }
 
-  function handleClassRepSignup(contact, otp) {
+  function handleClassRepSignup(contact, otp, level) {
     setOpen(false);
     classRepSignup(
-      { email, password, matricNo, contact, otp },
+      { email, password, matricNo, contact, otp, level },
       {
         onSettled: () => {
           setEmail("");

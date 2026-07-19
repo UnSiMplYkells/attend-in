@@ -1,25 +1,31 @@
 @import "tailwindcss";
 
 :root {
-  --bg: black;
-  --fg: white;
-
-  --primary: #1e40af;
-  --secondary: #2563eb;
+  --bg: #000000;
+  --fg: #ffffff;
+  --bg-sidebar: rgba(10, 10, 10, 0.85);
+  --bg-sidebar-mobile: rgba(16, 24, 39, 0.95);
+  --border: rgba(255, 255, 255, 0.1);
+  --card-bg: rgba(255, 255, 255, 0.05);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --text-muted: #9ca3af; /* gray-400 */
 }
 
 :root.light {
-  --bg: white;
-  --fg: black;
-
-  --primary: #1e40af;
-  --secondary: #2563eb;
+  --bg: #f8fafc; /* smooth light slate bg */
+  --fg: #0f172a; /* deep dark slate text */
+  --bg-sidebar: rgba(255, 255, 255, 0.85);
+  --bg-sidebar-mobile: rgba(255, 255, 255, 0.95);
+  --border: rgba(15, 23, 42, 0.1); /* light slate border */
+  --card-bg: #ffffff;
+  --card-border: rgba(15, 23, 42, 0.06);
+  --text-muted: #475569; /* slate-600 */
 }
 
-html, body {
+html,
+body {
   background-color: var(--bg);
   color: var(--fg);
-
   transition: background-color 0.3s, color 0.3s;
 }
 
@@ -32,14 +38,63 @@ html, body {
   scrollbar-width: none;
 }
 
-/* 
-.bg-theme { background-color: var(--bg);}
-.text-theme { color: var(--fg);}
-.border-theme { border-color: var(--fg);} */
-
-/* Tailwind override helper: replace default colors with variables */
-/* .bg-theme,
-.text-theme,
+.bg-theme {
+  background-color: var(--bg);
+}
+.text-theme {
+  color: var(--fg);
+}
 .border-theme {
-  transition: all 0.3s ease;
-} */
+  border-color: var(--border);
+}
+.bg-sidebar-theme {
+  background-color: var(--bg-sidebar);
+}
+.bg-card-theme {
+  background-color: var(--card-bg);
+}
+.text-muted-theme {
+  color: var(--text-muted);
+}
+
+/* Smart Light Theme Overrides */
+.light .bg-black\/85 {
+  background-color: var(--bg-sidebar);
+}
+
+.light .bg-black\/20 {
+  background-color: var(--card-bg);
+}
+
+.light .border-white\/5 {
+  border-color: var(--border);
+}
+
+.light .border-white\/10 {
+  border-color: var(--card-border);
+}
+
+.light .bg-white\/20 {
+  background-color: rgba(15, 23, 42, 0.08);
+}
+
+.light .bg-white\/5 {
+  background-color: var(--card-bg);
+  border-color: var(--card-border);
+}
+
+.light .text-gray-300 {
+  color: var(--text-muted);
+}
+
+.light .hover\:bg-white\/10:hover {
+  background-color: rgba(15, 23, 42, 0.04);
+}
+
+.light .hover\:text-white:hover {
+  color: var(--fg);
+}
+
+.light .bg-\[\#161e32\] {
+  background-color: var(--bg-sidebar-mobile);
+}

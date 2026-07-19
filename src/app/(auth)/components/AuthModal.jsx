@@ -9,6 +9,7 @@ import Button from "../../components/ui/Button";
 export default function AuthModal({ open, setOpen, onConfirmStudent, onConfirmClassRep }) {
   const [contact, setContact] = useState("");
   const [otp, setOtp] = useState("");
+  const [level, setLevel] = useState(100);
   const [errors, setErrors] = useState({
     contact: "",
     otp: "",
@@ -34,7 +35,7 @@ export default function AuthModal({ open, setOpen, onConfirmStudent, onConfirmCl
     setErrors(newErrors);
 
     if (isValid) {
-      onConfirmClassRep(contact, otp);
+      onConfirmClassRep(contact, otp, level);
     }
   }
 
@@ -112,6 +113,31 @@ export default function AuthModal({ open, setOpen, onConfirmStudent, onConfirmCl
                     )}
                   </div>
                 </div>
+
+                <div>
+                  <label
+                    htmlFor="level"
+                    className="block text-sm font-medium leading-6"
+                  >
+                    Level
+                  </label>
+                  <div className="mt-1">
+                    <select
+                      id="level"
+                      value={level}
+                      onChange={(e) => setLevel(Number(e.target.value))}
+                      className="block w-full rounded-md border border-transparent bg-white/5 py-2 px-3 text-white shadow-sm focus:border-green-500 focus:outline-none sm:text-md sm:leading-6"
+                    >
+                      <option value={100}>100L</option>
+                      <option value={200}>200L</option>
+                      <option value={300}>300L</option>
+                      <option value={400}>400L</option>
+                      <option value={500}>500L</option>
+                      <option value={600}>600L</option>
+                    </select>
+                  </div>
+                </div>
+
                 <Button margin="mt-6" type="submit" variant="secondary">
                   continue as class rep
                 </Button>
