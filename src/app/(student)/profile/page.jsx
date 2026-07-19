@@ -19,32 +19,14 @@ import ProfileSkeleton from "../components/profile/ProfileSkeleton";
 import EnrolledCourses from "../components/profile/EnrolledCourses";
 import Loader from "@/app/components/ui/Loader";
 import toast from "react-hot-toast";
+import UpgradeToStudent from "../components/profile/UpgradeToStudent";
+import { getDeviceInfo } from "@/app/utils/browserDetection";
+import { useUser } from "@/hooks/query/useUser";
 
-const getDeviceInfo = () => {
-  if (typeof window === "undefined") return "Checking Device...";
-
-  const ua = navigator.userAgent;
-
-  let os = "Unknown OS";
-  let browser = "Unknown Browser";
-
-  // OS detection
-  if (/android/i.test(ua)) os = "Android";
-  else if (/iPad|iPhone|iPod/.test(ua)) os = "iOS";
-  else if (/Windows/i.test(ua)) os = "Windows";
-  else if (/Mac OS X/i.test(ua)) os = "macOS";
-  else if (/Linux/i.test(ua)) os = "Linux";
-
-  // Browser detection (order matters!)
-  if (/edg/i.test(ua)) browser = "Edge";
-  else if (/chrome|crios|crmo/i.test(ua)) browser = "Chrome";
-  else if (/firefox|fxios/i.test(ua)) browser = "Firefox";
-  else if (/safari/i.test(ua) && !/chrome/i.test(ua)) browser = "Safari";
-
-  return `${os} - ${browser}`;
-};
 
 export default function ProfilePage() {
+  const { user, isUserLoading } = useUser();
+
   const { data, isLoading, error } = useStudentProfileStats();
   const { mutateAsync: removeCourse, isPending: isDropping } = useDropCourse();
   const router = useRouter();
@@ -174,6 +156,8 @@ export default function ProfilePage() {
         deviceInfo={deviceInfo}
         onDeviceChangeRequest={() => setDeviceModalOpen(true)}
       />
+
+      <UpgradeToStudent userType={user?.profileII?.user_type} />
 
       <EnrolledCourses courses={courses} onDeleteClick={triggerDeleteModal} />
 

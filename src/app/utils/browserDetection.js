@@ -1,5 +1,3 @@
-// utils/browserDetection.ts
-
 export function isAndroidEdge(){
   // Prevent Next.js server-side rendering errors
   if (typeof window === "undefined") return false;
@@ -13,6 +11,29 @@ export function isAndroidEdge(){
   return isAndroid && isEdge;
 };
 
+export function getDeviceInfo() {
+  if (typeof window === "undefined") return "Checking Device...";
+
+  const ua = navigator.userAgent;
+
+  let os = "Unknown OS";
+  let browser = "Unknown Browser";
+
+  // OS detection
+  if (/android/i.test(ua)) os = "Android";
+  else if (/iPad|iPhone|iPod/.test(ua)) os = "iOS";
+  else if (/Windows/i.test(ua)) os = "Windows";
+  else if (/Mac OS X/i.test(ua)) os = "macOS";
+  else if (/Linux/i.test(ua)) os = "Linux";
+
+  // Browser detection (order matters!)
+  if (/edg/i.test(ua)) browser = "Edge";
+  else if (/chrome|crios|crmo/i.test(ua)) browser = "Chrome";
+  else if (/firefox|fxios/i.test(ua)) browser = "Firefox";
+  else if (/safari/i.test(ua) && !/chrome/i.test(ua)) browser = "Safari";
+
+  return `${os} - ${browser}`;
+};
 
 
 // export const isNotGoogleChromeOnAndroid = (): boolean => {

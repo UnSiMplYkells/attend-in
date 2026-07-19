@@ -1,0 +1,85 @@
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import { useUser } from "@/hooks/query/useUser";
+import Link from "next/link";
+
+export default function NameComp({
+  collapsedOnMobile = false,
+  isDrawerOpen,
+  profileHref = "/profile",
+}) {
+  // IMPORTANT: Ensure this matches what your hook actually returns!
+  // If your hook returns 'user' instead of 'data', change this back to:
+  // const { user, isUserLoading } = useUser() || {};
+  const { user, isLoading: isUserLoading } = useUser() || {};
+  
+  const name = user?.profileII?.full_name?.trim() || "";
+  const role = user?.profileII?.role || "Member"; // Fallback if no role exists
+
+  const parts = name.split(/\s+/).filter(Boolean);
+
+  let firstInitial = "";
+  let lastInitial = "";
+  let lastName = "";
+
+  if (parts.length > 0) {
+    firstInitial = parts[0][0]?.toUpperCase() || "";
+    lastName = parts[0];
+    if (parts.length >= 2) {
+      lastInitial = parts[1][0]?.toUpperCase() || "";
+    }
+  }
+
+  const initials = (firstInitial + lastInitial) || "?";
+
+  return (
+    <SkeletonTheme baseColor="#313131" highlightColor="#525252">
+      <Link href={profileHref}>
+        <div
+          className={`${
+            isDrawerOpen ? "justify-start" : "justify-center"
+          } flex items-center sm:justify-start gap-3 overflow-hidden cursor-pointer`}
+        >
+          {/* Avatar Area */}
+          {isUserLoading ? (
+            <Skeleton circle width={40} height={40} />
+          ) : (
+            <div
+              className="size-10 shrink-0 rounded-full bg-linear-to-br from-indigo-500 
+                        to-purple-600 flex items-center justify-center text-white font-bold 
+                        shadow-md"
+            >
+              {initials}
+            </div>
+          )}
+
+          {/* Text Area */}
+          <div
+            className={`flex flex-col transition-all duration-300 ${
+              collapsedOnMobile ? "hidden sm:flex" : "flex"
+            }`}
+          >
+            {/* TIE SKELETONS TO isUserLoading, NOT TO TRUTHINESS OF NAME/ROLE */}
+            {isUserLoading ? (
+              <>
+                <Skeleton width={140} />
+                <Skeleton width={80} />
+              </>
+            ) : (
+              <>
+                <span className="text-sm font-semibold text-white truncate max-w-[150px]">
+                  {parts.length >= 2 
+                    ? `${lastName} ${lastInitial}.` 
+                    : name || "Unknown User"}
+                </span>
+                <span className="text-xs text-gray-500 truncate">
+                  {role}
+                </span>
+              </>
+            )}
+          </div>
+        </div>
+      </Link>
+    </SkeletonTheme>
+  );
+}

@@ -122,3 +122,48 @@ export async function dropCourse(classId) {
   if (error) throw new Error("Failed to drop course");
   return true;
 }
+
+export async function upgradeUserToStudent(matricNumber, deviceFingerprint) {
+  const supabase = await createClient();
+  const user = await getCurrentUser();
+
+  if (!user) throw new Error("Unauthorized");
+
+  // 1. Verify in registry and get the official name
+  const { data: registryResult, error: registryError } = await supabase
+    .from("students_registry")
+    .select("matric_number, full_name") // Removed department, added full_name
+    .eq("matric_number", matricNumber)
+    .single();
+
+  if (registryError || !registryResult) {
+    throw new Error("Matric number not found in official university registry.");
+  }
+
+  // 2. Ensure no other user has already claimed this matric number
+  const { data: existingUser } = await supabase
+    .from("users")
+    .select("id")
+    .eq("matric_number", matricNumber)
+    .maybeSingle();
+
+  if (existingUser) {
+    throw new Error("This matric number is already linked to another account.");
+  }
+
+  // 3. Perform the upgrade
+  const { error } = await supabase
+    .from("users")
+    .update({
+      matric_number: matricNumber,
+      full_name: registryResult.full_name, // Overwrite name with official registry name
+      bound_device_id: deviceFingerprint, // Bind their device for attendance
+      user_type: "student",
+      role: "student",
+    })
+    .eq("id", user.id);
+
+  if (error) throw new Error(error.message);
+
+  return true;
+}

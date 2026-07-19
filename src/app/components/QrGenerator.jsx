@@ -70,7 +70,7 @@ export default function QrGenerator({ value }) {
         onClick={handleDownload}
         disabled={isDownloading}
         className={`
-          flex items-center gap-2 px-6 py-2.5 rounded-lg font-medium text-sm transition-all duration-200 border
+          flex items-center gap-2 px-6 py-2.5 rounded-lg font-medium text-sm transition-all duration-200 border cursor-pointer
           ${
             isDownloaded
               ? "bg-green-500/10 text-green-400 border-green-500/20 hover:bg-green-500/20"

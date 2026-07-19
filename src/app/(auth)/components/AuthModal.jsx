@@ -1,10 +1,10 @@
 "use client"
 import { useState } from "react";
-import ModalPortal from "../components/ModalPortal";
-import Modal from "../components/ui/Modal";
+import ModalPortal from "../../components/ModalPortal";
+import Modal from "../../components/ui/Modal";
 import { GrUserAdmin } from "react-icons/gr";
 import { RxPerson } from "react-icons/rx";
-import Button from "../components/ui/Button";
+import Button from "../../components/ui/Button";
 
 export default function AuthModal({ open, setOpen, onConfirmStudent, onConfirmClassRep }) {
   const [contact, setContact] = useState("");
@@ -68,6 +68,7 @@ export default function AuthModal({ open, setOpen, onConfirmStudent, onConfirmCl
                       id="phoneNumber"
                       type="text"
                       autoComplete="phoneNumber"
+                      maxLength={11}
                       placeholder="08012345678"
                       value={contact}
                       onChange={(e) => {
@@ -97,6 +98,7 @@ export default function AuthModal({ open, setOpen, onConfirmStudent, onConfirmCl
                       type="text"
                       autoComplete="otp"
                       placeholder="12345678"
+                      maxLength={8}
                       value={otp}
                       onChange={(e) => {
                         setOtp(e.target.value);

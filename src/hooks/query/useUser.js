@@ -18,8 +18,12 @@ export function useUser() {
   });
 
   if (isError) {
-    console.error("Critical Auth Error: Server is unreachable")
-    return
+    console.error("Critical Auth Error: Server is unreachable");
+    return {
+      isUserLoading: false,
+      user: null,
+      isAuthenticated: false,
+    };
   }
 
   return {
