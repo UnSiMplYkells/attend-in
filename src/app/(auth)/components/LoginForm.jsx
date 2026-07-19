@@ -49,7 +49,7 @@ export default function LoginForm() {
         <button
           type="button"
           onClick={() => setUserType('student')}
-          className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors ${
+          className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors cursor-pointer ${
             userType === 'student'
               ? 'bg-indigo-600 text-white shadow'
               : 'text-gray-400 hover:text-white'
@@ -60,7 +60,7 @@ export default function LoginForm() {
         <button
           type="button"
           onClick={() => setUserType('general')}
-          className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors ${
+          className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors cursor-pointer ${
             userType === 'general'
               ? 'bg-indigo-600 text-white shadow'
               : 'text-gray-400 hover:text-white'

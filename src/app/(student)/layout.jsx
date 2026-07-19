@@ -5,6 +5,7 @@ import Header from "./components/Header"
 import AuthToast from "../components/AuthToasts";
 import PushNotificationManager from "./components/PermissionsManager";
 import BrowserWarningBanner from "./components/BrowserBanner";
+import LevelVerificationModal from "../components/LevelVerificationModal";
 
 // const ParticlesBackground = dynamic(
 //   () => import("./components/ParticlesBackground"),
@@ -30,6 +31,7 @@ export default async function DashboardLayout({ children }) {
           </div>
           <div className="flex-1 overflow-y-auto relative backdrop-blur-sm no-scrollbar">
             <BrowserWarningBanner />
+            <LevelVerificationModal />
             {children}
             <PushNotificationManager />
           </div>

@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import { createClient } from "@/app/utils/supabase/client";
 import { motion } from "framer-motion";
 import { FiLogOut} from "react-icons/fi";
@@ -16,12 +17,21 @@ import Button from "@/app/components/ui/Button";
 import Modal from "@/app/components/ui/Modal";
 import GlobalStats from "../components/profile/GlobalStats";
 import ProfileSkeleton from "../components/profile/ProfileSkeleton";
-import EnrolledCourses from "../components/profile/EnrolledCourses";
 import Loader from "@/app/components/ui/Loader";
 import toast from "react-hot-toast";
 import UpgradeToStudent from "../components/profile/UpgradeToStudent";
 import { getDeviceInfo } from "@/app/utils/browserDetection";
 import { useUser } from "@/hooks/query/useUser";
+
+const EnrolledCourses = dynamic(
+  () => import("../components/profile/EnrolledCourses"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="animate-pulse h-48 bg-white/10 rounded-xl" />
+    ),
+  },
+);
 
 
 export default function ProfilePage() {
@@ -124,7 +134,7 @@ export default function ProfilePage() {
               {profile?.full_name}
             </h1>
             <p className="text-slate-400 text-sm">
-              {profile?.students_registry?.department} • Level (will come later)
+              {profile?.students_registry?.department} • {profile?.level ? `${profile.level}L` : "Not Set"}
             </p>
           </div>
         </div>

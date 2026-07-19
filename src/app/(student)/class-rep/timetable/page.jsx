@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import Papa from "papaparse";
 import { useTimetable } from "@/hooks/query/useTimetable";
 import Button from "@/app/components/ui/Button";
 import { toast } from "react-hot-toast";
@@ -71,11 +70,13 @@ export default function TimetablePage() {
   const formatTime = (h) => `${h.toString().padStart(2, "0")}:00`;
 
   // --- CSV Export Logic ---
-  function downloadCSV() {
+  async function downloadCSV() {
     if (!timetable || timetable.length === 0) {
       toast.error("Timetable is empty. Nothing to download.");
       return;
     }
+
+    const Papa = await import("papaparse");
 
     // Prepare headers: "DAY", "08:00-09:00", "09:00-10:00", etc.
     const fields = [

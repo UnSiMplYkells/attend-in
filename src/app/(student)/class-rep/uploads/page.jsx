@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import Papa from "papaparse";
 import { createClient } from "@/app/utils/supabase/client";
 import UploadsPage from "@/app/admin/upload-data/page";
 
@@ -65,32 +64,33 @@ export default function CrUploadsPage() {
     fetchClasses();
   }, []);
 
-  const addLog = (message, type = "info") => {
+  function addLog(message, type = "info"){
     setLogs((prev) => [
       ...prev,
       { message, type, id: Date.now() + Math.random() },
     ]);
   };
 
-  const handleUploadClick = () => {
+  function handleUploadClick() {
     setShowPopup(true);
   };
 
-  const handlePopupClose = () => {
+  function handlePopupClose() {
     setShowPopup(false);
     setTimeout(() => {
       fileInputRef.current?.click();
     }, 100);
   };
 
-  // CHANGED: Made handleFileUpload async so we can fetch the user first
-  const handleFileUpload = async (e) => {
+  async function handleFileUpload(e) {
     const file = e.target.files[0];
     if (!file) return;
 
     setUploading(true);
     setLogs([]);
     addLog(`Reading matrix file: ${file.name}...`);
+
+    const Papa = await import("papaparse");
 
     // 1. Get the current user securely before processing
     const {

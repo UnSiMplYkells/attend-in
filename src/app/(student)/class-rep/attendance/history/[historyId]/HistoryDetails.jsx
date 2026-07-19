@@ -3,7 +3,6 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useGetSessionsByClassId } from "@/hooks/query/useAtdSessions";
-import { utils, writeFile } from "xlsx";
 import { useDebounce } from "@/hooks/useDebounce";
 import highlightText from "@/app/helper/searchHighlight";
 import { useVirtualizer } from "@tanstack/react-virtual";
@@ -134,11 +133,13 @@ export default function HistoryDetails({ historyId }) {
 
   const totalAttended = selectedSessionAttendees.length;
 
-  function handleExport() {
+  async function handleExport() {
     if (filteredAttendees.length === 0) {
       alert("No students to export for this selection.");
       return;
     }
+
+    const { utils, writeFile } = await import("xlsx");
 
     const formattedData = filteredAttendees.map((user) => ({
       Name: user.full_name || "N/A",
