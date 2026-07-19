@@ -1,5 +1,6 @@
 "use server";
 import { createClient } from "@/app/utils/supabase/server";
+import { getGlobalSession } from "./app_settings";
 
 export async function signUpNewUser({
   email,
@@ -107,7 +108,6 @@ export async function signInWithEmail({ email, password }) {
     password,
   });
 
-  // ✅ Return the error gracefully instead of throwing it
   if (error) {
     return { success: false, error: error.message };
   }
@@ -129,7 +129,7 @@ export async function createClassRepInvite(matricNo) {
   }
 
   const otp = Math.floor(10000000 + Math.random() * 90000000).toString();
-  const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour from now
+  const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
 
   const { data, error } = await supabase.from("class_rep_invites").upsert(
     {
@@ -164,7 +164,7 @@ export async function getActiveInvites() {
 
 export async function signUpClassRep(formData) {
   const supabase = await createClient();
-  const { matricNo, otp, contact, ...rest } = formData;
+  const { matricNo, otp, contact, level, ...rest } = formData;
 
   // 1. Check Invite
   const { data: invite, error: inviteError } = await supabase
@@ -214,22 +214,36 @@ export async function signUpClassRep(formData) {
     throw new Error("Could not verify department for this matric number.");
   }
 
-  // 6. Create the Class Rep Entry
-  const { error: repError } = await supabase.from("class_reps").insert({
-    student_id: userId,
-    contact,
-    department: registry.department,
-  });
+  // 6. Calculate Admission Year
+  const globalSession = await getGlobalSession();
+  const currentBaseYear = parseInt(globalSession.substring(0, 4), 10);
+  const admissionYearToSave = currentBaseYear - (level - 100) / 100;
 
-  if (repError) {
-    console.error("Failed to create class_rep entry for user:", userId);
+  // 7. Create the Class Rep Entry
+  try {
+    const { error: repError } = await supabase.from("class_reps").insert({
+      student_id: userId,
+      contact,
+      department: registry.department,
+      admission_session_year: admissionYearToSave,
+    });
+
+    if (repError) throw repError;
+  } catch (error) {
+    if (error.code === "23505") {
+      // Unique constraint violation
+      throw new Error(
+        "A Class Representative already exists for your department at this level."
+      );
+    }
+    console.error("Failed to create class_rep entry for user:", userId, error);
     throw new Error("Unable to save class rep details after user creation.");
   }
 
-  // 7. Update the user role
+  // 8. Update the user role and admission year
   const { error: updateRoleError } = await supabase
     .from("users")
-    .update({ role: "class rep" })
+    .update({ role: "class rep", admission_session_year: admissionYearToSave })
     .eq("id", userId);
 
   if (updateRoleError) {
@@ -242,15 +256,47 @@ export async function signUpClassRep(formData) {
 
 export async function verifyStudentForInvite(matricNo) {
   const supabase = await createClient();
-  const { data: student, error } = await supabase
+
+  // A. Fetch student's details from the registry
+  const { data: student, error: studentError } = await supabase
     .from("students_registry")
     .select("full_name, department, matric_number")
     .eq("matric_number", matricNo)
     .single();
 
-  if (error || !student) {
+  if (studentError || !student) {
     throw new Error("Matric number not found in the university registry.");
   }
 
-  return student;
+  // B. Extract admission year from matric number
+  const admissionYear = parseInt(matricNo.substring(0, 4), 10);
+
+  // C. Query existing reps for the same department
+  const { data: reps, error: repsError } = await supabase
+    .from("class_reps")
+    .select("admission_session_year, users!inner(full_name)")
+    .eq("department", student.department);
+
+  if (repsError) {
+    console.error("Error fetching existing class reps:", repsError);
+    throw new Error("Could not verify existing class representatives.");
+  }
+
+  // D. Fetch global session and calculate levels
+  const globalSession = await getGlobalSession();
+  const currentBaseYear = parseInt(globalSession.substring(0, 4), 10);
+
+  const existingReps = reps.map((rep) => ({
+    ...rep,
+    level: (currentBaseYear - rep.admission_session_year) * 100 + 100,
+    full_name: rep.users.full_name, // Flatten the nested user name
+  }));
+
+  // E. Check for conflict
+  const hasConflict = existingReps.some(
+    (rep) => rep.admission_session_year === admissionYear
+  );
+
+  // F. Return the complete payload
+  return { student, existingReps, hasConflict };
 }
