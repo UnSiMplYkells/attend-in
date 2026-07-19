@@ -3,13 +3,13 @@ import { getMessaging, getToken, isSupported } from "firebase/messaging";
 
 // Your specific web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCB0gQHtDe4z0b3g80knI_J5t68mqVNanQ",
-  authDomain: "fcm-for-attendin.firebaseapp.com",
-  projectId: "fcm-for-attendin",
-  storageBucket: "fcm-for-attendin.firebasestorage.app",
-  messagingSenderId: "71690818372",
-  appId: "1:71690818372:web:cb63bba9336f0b897fbd11",
-  measurementId: "G-P4BGS4YJMB",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
 // Initialize Firebase safely for Next.js
