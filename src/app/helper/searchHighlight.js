@@ -1,16 +1,18 @@
 export default function highlightText(text, highlight) {
-    if (!highlight) return text;
+  if (!highlight) return text;
 
-    const regex = new RegExp(`(${highlight})`, "gi"); // match case-insensitive
-    const parts = text.split(regex);
+  const escaped = highlight.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-    return parts.map((part, index) =>
-      regex.test(part) ? (
-        <span key={index} className="text-yellow-400 font-semibold">
-          {part}
-        </span>
-      ) : (
-        part
-      )
-    );
-  }
+  const regex = new RegExp(`(${escaped})`, "gi");
+  const parts = text.split(regex);
+
+  return parts.map((part, index) =>
+    part.toLowerCase() === highlight.toLowerCase() ? (
+      <span key={index} className="text-yellow-400 font-semibold">
+        {part}
+      </span>
+    ) : (
+      part
+    ),
+  );
+}

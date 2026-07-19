@@ -3,34 +3,39 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { TbZoomScan } from "react-icons/tb";
 import { GrHistory } from "react-icons/gr";
 import { ImProfile } from "react-icons/im";
-import { RiAdminFill } from "react-icons/ri";
 import { MdDashboard, MdEvent } from "react-icons/md";
 import { GoSidebarCollapse } from "react-icons/go";
 import { IoClose } from "react-icons/io5";
-import { useUser } from "@/hooks/query/useUser";
 import NameComp from "@/app/components/NameComp";
 
 export default function Sidebar() {
   const pathname = usePathname();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const { user } = useUser() || {};
-  const userRole = user?.profileII?.role;
 
-  const baseLinks = [
-    { href: "/dashboard", icon: MdDashboard, label: "Dashboard" },
-    { href: "/attendance/scan", icon: TbZoomScan, label: "Scan" },
-    { href: "/attendance/history", icon: GrHistory, label: "History" },
-    { href: "/general-events", icon: MdEvent, label: "General Events" },
-    { href: "/profile", icon: ImProfile, label: "Profile" },
+  const links = [
+    {
+      href: "/general/dashboard",
+      icon: MdDashboard,
+      label: "Dashboard",
+    },
+    {
+      href: "/general/general-events",
+      icon: MdEvent,
+      label: "General Events",
+    },
+    {
+      href: "/general/records",
+      icon: GrHistory,
+      label: "Records",
+    },
+    {
+      href: "/general/profile",
+      icon: ImProfile,
+      label: "Profile",
+    },
   ];
-
-  const links = [...baseLinks];
-  if (userRole === "class rep") {
-    links.push({ href: "/class-rep", icon: RiAdminFill, label: "Admin" });
-  }
 
   const getLinkClasses = (path) => {
     const isActive = pathname === path;
@@ -117,7 +122,11 @@ export default function Sidebar() {
           </nav>
 
           <div className="p-4 mb-3 border-t bg-[#0f172a]/50">
-            <NameComp isDrawerOpen={isDrawerOpen} collapsedOnMobile={false} />
+            <NameComp
+              profileHref="/general/profile"
+              isDrawerOpen={isDrawerOpen}
+              collapsedOnMobile={false}
+            />
           </div>
         </div>
       </div>

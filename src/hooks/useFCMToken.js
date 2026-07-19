@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { onMessage, Unsubscribe } from "firebase/messaging";
+import { onMessage } from "firebase/messaging";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { createClient } from "@/app/utils/supabase/client";
@@ -13,7 +13,6 @@ async function getNotificationPermissionAndToken() {
     return null;
   }
 
-  // ONLY fetch the token if permission is ALREADY granted.
   if (Notification.permission === "granted") {
     return await fetchToken();
   }
@@ -21,7 +20,7 @@ async function getNotificationPermissionAndToken() {
   return null;
 }
 
-const useFcmToken = () => {
+export default function useFcmToken() {
   const router = useRouter();
   const [notificationPermissionStatus, setNotificationPermissionStatus] =
     useState(null);
@@ -29,7 +28,7 @@ const useFcmToken = () => {
   const retryLoadToken = useRef(0);
   const isLoading = useRef(false);
 
-  async function loadToken(){
+  async function loadToken() {
     if (isLoading.current) return;
 
     isLoading.current = true;
@@ -47,7 +46,6 @@ const useFcmToken = () => {
 
     if (!fetchedToken) {
       if (retryLoadToken.current >= 3) {
-        // alert("Unable to load token, refresh the browser");
         console.info(
           "%cPush Notifications issue - unable to load token after 3 retries",
           "color: green; background: #c7c7c7; padding: 8px; font-size: 20px",
@@ -86,7 +84,7 @@ const useFcmToken = () => {
     }
 
     isLoading.current = false;
-  };
+  }
 
   useEffect(() => {
     if ("Notification" in window) {
@@ -103,7 +101,7 @@ const useFcmToken = () => {
 
       const unsubscribe = onMessage(m, (payload) => {
         if (Notification.permission !== "granted") return;
-        
+
         const title = payload.data?.title;
         const body = payload.data?.body;
         const link = payload.data?.link;
@@ -159,6 +157,4 @@ const useFcmToken = () => {
   }, [token, router]);
 
   return { token, notificationPermissionStatus, requestPermission: loadToken };
-};
-
-export default useFcmToken;
+}

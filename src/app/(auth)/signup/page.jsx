@@ -1,7 +1,7 @@
 "use client"
 import dynamic from "next/dynamic";
 import ThemeToggle from "@/app/components/ThemeToggle";
-import AuthForm from "../AuthForm";
+import AuthForm from "../components/AuthForm";
 import { usePathname } from "next/navigation";
 
 const PixelBlast = dynamic(() => import("@/app/components/ui/PixelBlast"), {

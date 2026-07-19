@@ -118,7 +118,7 @@ export default function CoursesPage() {
                     </span>
                     <div className="p-1.5 rounded-full bg-white/5 group-hover:bg-blue-500/20 transition-colors duration-300">
                       <svg
-                        className="w-4 h-4 text-blue-400 opacity-0 group-hover:opacity-100 transition-all transform -translate-x-2 group-hover:translate-x-0 duration-300"
+                        className="w-4 h-4 text-blue-400 md:opacity-0 md:group-hover:opacity-100 transition-all transform -translate-x-2 group-hover:translate-x-0 duration-300"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
