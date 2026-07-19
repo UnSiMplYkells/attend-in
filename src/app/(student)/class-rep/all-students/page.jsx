@@ -14,7 +14,6 @@ import {
   FiBell,
   FiDownload,
 } from "react-icons/fi";
-import * as XLSX from "xlsx";
 import EditDeviceModal from "../components/EditDeviceModal";
 import Button from "@/app/components/ui/Button";
 import FullLoader from "@/app/components/ui/FullLoader";
@@ -92,8 +91,10 @@ export default function StudentsPage() {
     setOpen(true);
   }
 
-  function handleExportExcel() {
+  async function handleExportExcel() {
     if (!allDeptStudents || allDeptStudents.length === 0) return;
+
+    const XLSX = await import("xlsx");
 
     const exportData = [...allDeptStudents]
       .sort((a, b) => a.full_name.localeCompare(b.full_name))
@@ -131,7 +132,6 @@ export default function StudentsPage() {
               />
             </div>
 
-            {/* Desktop Action Buttons */}
             <div className="hidden lg:flex items-center gap-3">
               <button
                 onClick={handleExportExcel}
@@ -141,7 +141,6 @@ export default function StudentsPage() {
                 <FiDownload className="size-4" />
                 {isAllDeptStudentsLoading ? "Loading List..." : "Export List"}
               </button>
-              {/* Dummy Add Student Button */}
               <Button width="w-fit" padding="px-3 py-2" variant="primary">
                 + Add Student
               </Button>
@@ -149,7 +148,6 @@ export default function StudentsPage() {
           </div>
         </div>
 
-        {/* Main Content Area */}
         <div className="flex-1 overflow-auto no-scrollbar">
           <div className="sticky left-0 px-4 sm:px-6 lg:px-8 py-6 border-b border-white/5">
             <div className="flex flex-col [@media(min-width:540px)]:flex-row sm:items-start sm:justify-between gap-4">
@@ -176,7 +174,6 @@ export default function StudentsPage() {
                 )}
               </div>
 
-              {/* Mobile / Tablet Action Buttons (Hidden on LG screens) */}
               <div className="flex lg:hidden flex-row flex-wrap items-center gap-3 w-full [@media(min-width:540px)]:w-auto">
                 <button
                   onClick={handleExportExcel}
@@ -186,7 +183,6 @@ export default function StudentsPage() {
                   <FiDownload className="size-4" />
                   {isAllDeptStudentsLoading ? "Loading..." : "Export List"}
                 </button>
-                {/* Dummy Add Student Button */}
                 <div className="flex-1 [@media(min-width:540px)]:flex-none">
                   <Button width="w-full" padding="px-3 py-2" variant="primary">
                     + Add Student

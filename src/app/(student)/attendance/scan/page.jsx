@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import QrScanner from "@/app/components/QrScanner";
+import dynamic from "next/dynamic";
+
 import { useUser } from "@/hooks/query/useUser";
 import { useGeo } from "@/hooks/useGeo";
 import { useAttendanceSessionByQr } from "@/hooks/query/useAtdSessions";
@@ -16,6 +17,11 @@ import {
   MdError,
 } from "react-icons/md";
 import Button from "@/app/components/ui/Button";
+
+const QrScanner = dynamic(() => import("@/app/components/QrScanner"), {
+  ssr: false,
+  loading: () => <p>Loading scanner...</p>,
+});
 
 const SCAN_TYPE = {
   UNIVERSITY: "university",
@@ -34,7 +40,6 @@ export default function ScanPage() {
   const { mutate: registerGeneral, isPending: isRegisteringGeneral } =
     useRegisterGeneralAttendee();
 
-  // University Flow Hooks
   const { sessionByQr, isSessionByQrLoading } = useAttendanceSessionByQr(
     scanResult && !scanResult.includes("/scan/") ? scanResult : null,
   );
@@ -91,7 +96,7 @@ export default function ScanPage() {
   ]);
 
   function handleScan(result) {
-    if (scanStatus !== "idle") return; // Prevent multiple scans
+    if (scanStatus !== "idle") return;
 
     setScanResult(result);
 
@@ -106,10 +111,8 @@ export default function ScanPage() {
         eventId = pathParts[2];
       }
     } catch (error) {
-      // Safely ignore URL parsing errors (assumes it's a University QR string)
     }
 
-    // THIS MUST BE INSIDE handleScan
     if (isGeneralEvent) {
       setScanStatus("loading");
 
@@ -145,7 +148,6 @@ export default function ScanPage() {
           },
         );
       } catch (error) {
-        // Now execution errors will properly update the UI instead of silently hanging
         setScanStatus("error");
         setErrorMessage(error.message || "An unexpected error occurred.");
       }
@@ -158,13 +160,10 @@ export default function ScanPage() {
     setErrorMessage("");
   }
 
-  // FIX 1: Don't let GPS loading block the whole page. General attendees don't need to wait for it.
   if (isUserLoading) return <FullLoader />;
 
-  // FIX 2: Determine if this is a general scan
   const isGeneralScan = scanResult?.includes("/scan/");
 
-  // FIX 3: Isolate the loading UI logic based on what type of QR code was scanned
   const isLoading = isGeneralScan
     ? scanStatus === "loading" || isRegisteringGeneral
     : scanStatus === "loading" ||

@@ -1,6 +1,7 @@
 "use server";
 import { createClient } from "@/app/utils/supabase/server";
 import { getCurrentUser } from "./session";
+import { getGlobalSession } from "./app_settings";
 
 export async function getStudentProfileStats() {
   const supabase = await createClient();
@@ -8,22 +9,39 @@ export async function getStudentProfileStats() {
 
   if (!user) throw new Error("Unauthorized");
 
-  const [{ data: profile }, { data: rosters }, { data: records }] =
-    await Promise.all([
-      supabase
-        .from("users")
-        .select("*, students_registry!matric_number(department)")
-        .eq("id", user.id)
-        .single(),
-      supabase
-        .from("rosters")
-        .select("class_id, classes(course_code, course_title)")
-        .eq("student_id", user.id),
-      supabase
-        .from("attendance_records")
-        .select("session_id")
-        .eq("student_id", user.id),
-    ]);
+  const [
+    { data: profile },
+    { data: rosters },
+    { data: records },
+    globalSession,
+  ] = await Promise.all([
+    supabase
+      .from("users")
+      .select("*, students_registry!matric_number(department)")
+      .eq("id", user.id)
+      .single(),
+    supabase
+      .from("rosters")
+      .select("class_id, classes(course_code, course_title)")
+      .eq("student_id", user.id),
+    supabase
+      .from("attendance_records")
+      .select("session_id")
+      .eq("student_id", user.id),
+    getGlobalSession(),
+  ]);
+
+  // Calculate dynamic level
+  let level = null;
+  if (profile?.admission_session_year && globalSession) {
+    const currentBaseYear = parseInt(globalSession.substring(0, 4), 10);
+    level = (currentBaseYear - profile.admission_session_year) * 100 + 100;
+  }
+
+  // Attach level to profile object
+  if (profile) {
+    profile.level = level;
+  }
 
   const enrolledClasses =
     rosters?.map((r) => ({
@@ -106,6 +124,25 @@ export async function getStudentProfileStats() {
     mostMissed,
     courses,
   };
+}
+
+export async function updateStudentAdmissionYear(admissionYear) {
+  const supabase = await createClient();
+  const user = await getCurrentUser();
+
+  if (!user) throw new Error("Unauthorized");
+
+  const { error } = await supabase
+    .from("users")
+    .update({ admission_session_year: admissionYear })
+    .eq("id", user.id);
+
+  if (error) {
+    console.error("Error updating admission year:", error);
+    throw new Error("Failed to update admission year.");
+  }
+
+  return true;
 }
 
 export async function dropCourse(classId) {

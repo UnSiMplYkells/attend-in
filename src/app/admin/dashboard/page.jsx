@@ -10,8 +10,9 @@ import toast from "react-hot-toast";
 import { FiKey, FiCopy, FiCheck } from "react-icons/fi";
 import Button from "@/app/components/ui/Button";
 import Loader from "@/app/components/ui/Loader";
-import Modal from "@/app/components/ui/Modal"; 
+import Modal from "@/app/components/ui/Modal";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import GlobalSessionManager from "../components/GlobalSessionManager";
 
 function InviteGenerator() {
   const queryClient = useQueryClient();
@@ -252,15 +253,29 @@ function InviteList() {
 
 export default function AdminDashboardPage() {
   return (
-    <div className="min-h-screen flex flex-col items-center p-4 sm:p-6 space-y-8 animate-in fade-in duration-500">
-      <div className="text-center">
-        <div className="inline-flex items-center justify-center p-3 bg-indigo-500/10 rounded-full mb-4 ring-1 ring-indigo-500/30">
-          <FiKey className="text-3xl text-indigo-400" />
+    <div className="min-h-screen w-full p-4 sm:p-6 space-y-8 animate-in fade-in duration-500">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="flex flex-col items-center">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center p-3 bg-indigo-500/10 rounded-full mb-4 ring-1 ring-indigo-500/30">
+              <FiKey className="text-3xl text-indigo-400" />
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-white">Class Rep Invitations</h1>
+            <p className="text-gray-400 text-sm sm:text-base">Generate and manage OTP codes for new class representatives.</p>
+          </div>
+          <InviteGenerator />
         </div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-white">Class Rep Invitations</h1>
-        <p className="text-gray-400 text-sm sm:text-base">Generate and manage OTP codes for new class representatives.</p>
+        <div className="flex flex-col items-center">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center p-3 bg-blue-500/10 rounded-full mb-4 ring-1 ring-blue-500/30">
+              <FiKey className="text-3xl text-blue-400" />
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-white">Global Settings</h1>
+            <p className="text-gray-400 text-sm sm:text-base">Manage application-wide settings.</p>
+          </div>
+          <GlobalSessionManager />
+        </div>
       </div>
-      <InviteGenerator />
       <InviteList />
     </div>
   );
