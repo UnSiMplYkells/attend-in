@@ -1,8 +1,7 @@
 import dynamic from "next/dynamic"
-import AuthToast from "../components/AuthToasts";
 import Header from "../(student)/components/Header";
 import Sidebar from "./components/Sidebar";
-import BrowserWarningBanner from "../(student)/components/BrowserBanner";
+import { requireUser } from "@/lib/server/requireUser";
 
 // const ParticlesBackground = dynamic(
 //   () => import("./components/ParticlesBackground"),
@@ -17,7 +16,6 @@ export default async function DashboardLayout({ children }) {
 
   return (
     <>
-      {/* remeber to return aprticles background */}
       {/* <ParticlesBackground /> */}
       <div className="flex flex-col relative max-w-[1440px] h-screen m-auto text-theme overflow-hidden">
         <Header />
