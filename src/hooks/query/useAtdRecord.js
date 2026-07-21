@@ -43,18 +43,20 @@ export function useSetAtdRecord() {
 }
 
 // fetches attendance record for a given session and user
-export function useGetAtdRecord(sessionId) {
+export function useGetAtdRecord(sessionId, userId) {
 
-  const { data, isLoading: isGetAtdRecordLoading } = useQuery({
-    queryKey: ["get-atd-record", sessionId],
-    queryFn: () => getAtdRecord({ sessionId }),
+  const { data, isLoading: isGetAtdRecordLoading, isFetched } = useQuery({
+    queryKey: ["get-atd-record", sessionId, userId],
+    queryFn: () => getAtdRecord({ sessionId, userId }),
     staleTime: 0,
     refetchOnMount: true,
+    // Only run this query if the sessionId is available
     enabled: !!sessionId
   });
 
   return {
     data,
     isGetAtdRecordLoading,
+    isFetched, // Pass isFetched back to the component
   };
 }

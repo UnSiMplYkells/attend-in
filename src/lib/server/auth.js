@@ -17,7 +17,7 @@ export async function signUpNewUser({
     email,
     password,
     options: {
-      emailRedirectTo: "http://localhost:3000/login",
+      emailRedirectTo: "https://atttendin.netlify.app/login",
       // Conditionally add matric_no to metadata only for students
       data: userType === "student" ? { matric_no: matricNo } : {},
     },
@@ -61,7 +61,6 @@ export async function signUpNewUser({
         id: authUserId,
         matric_number: userType === "student" ? matricNo : null,
         full_name: finalFullName,
-        // department: department, // Save department
         bound_device_id: deviceFingerprint || null,
         email,
         role: userType === "student" ? "student" : "general_user",
@@ -197,7 +196,7 @@ export async function signUpClassRep(formData) {
   }
 
   // 4. Create the User (as a student first)
-  const { userId } = await signUpNewUser({
+  const { userId, deviceFingerprint } = await signUpNewUser({
     ...rest,
     matricNo,
     userType: "student",
@@ -251,7 +250,7 @@ export async function signUpClassRep(formData) {
     throw new Error("Unable to update user role to class rep.");
   }
 
-  return { success: true };
+  return { success: true, deviceFingerprint };
 }
 
 export async function verifyStudentForInvite(matricNo) {

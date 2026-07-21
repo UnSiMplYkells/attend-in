@@ -219,7 +219,7 @@ export default function TimetablePage() {
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-4 mb-6">
           <div>
-            <div className="flex items-center gap-2 text-yellow-600 mb-1">
+            <div className="flex items-center gap-2 text-indigo-400 mb-1">
               <FaCalendarAlt size={20} />
               <h1 className="text-2xl font-bold text-white">Class Timetable</h1>
             </div>

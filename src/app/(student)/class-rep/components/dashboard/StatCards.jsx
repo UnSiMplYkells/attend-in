@@ -27,16 +27,17 @@ export default function StatCards({ statsData }) {
       color: "text-emerald-500",
     },
     {
-      title: "Flagged Students",
-      value: statsData?.flaggedCount || 0,
-      icon: FiAlertTriangle,
-      color: "text-red-500",
+      title: "Avg. Attendance",
+      value: statsData?.avgAttendance || "0%",
+      icon: FiCheckCircle,
+      color: "text-emerald-500",
     },
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       {stats.map((stat, index) => {
+        if (stat.title === "Flagged Students") return null;
         const Icon = stat.icon;
         return (
           <div

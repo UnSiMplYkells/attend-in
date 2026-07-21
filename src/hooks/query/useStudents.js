@@ -1,13 +1,18 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { getClassStudents, getStudents, getStudentsByDept } from "@/lib/server/students";
 
-export function useGetStudents(department, page = 1, searchTerm = "") {
-  const {data, isLoading: isStudentsLoading, isPlaceholderData} = useQuery({
-    queryKey: ["students", department, page, searchTerm],
-    queryFn: () => getStudents(department, page, searchTerm),
+export function useGetStudents(
+  department,
+  page = 1,
+  searchTerm = "",
+  admissionSessionYear,
+) {
+  const { data, isLoading: isStudentsLoading, isPlaceholderData } = useQuery({
+    queryKey: ["students", department, page, searchTerm, admissionSessionYear],
+    queryFn: () => getStudents(department, page, searchTerm, admissionSessionYear),
     placeholderData: keepPreviousData,
     staleTime: 3 * 60 * 1000,
-    enabled: !!department,
+    enabled: !!department && !!admissionSessionYear,
   });
 
   return {
@@ -60,12 +65,12 @@ export function useGetClassStudents(
 // }
 
 // for admin usage
-export function useGetStudentsByDept(department) {
+export function useGetStudentsByDept(department, admissionSessionYear) {
   const { isLoading: isAllDeptStudentsLoading, data: allDeptStudents } =
     useQuery({
-      queryKey: ["studentsByDept"],
-      queryFn: () => getStudentsByDept(department),
-      enabled: !!department,
+      queryKey: ["studentsByDept", department, admissionSessionYear],
+      queryFn: () => getStudentsByDept(department, admissionSessionYear),
+      enabled: !!department && !!admissionSessionYear,
       staleTime: Infinity,
     });
 

@@ -103,7 +103,7 @@ Deno.serve(async (req) => {
               title: "Session Started!",
               body: `${courseCode} has started.`,
               icon: dynamicIconUrl,
-              link: "https://carbon-retro-bent-twelve.trycloudflare.com/attendance/scan"
+              link: "https://atttendin.netlify.app/attendance/scan"
             }
           },
         }),

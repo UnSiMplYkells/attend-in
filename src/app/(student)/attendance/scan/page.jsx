@@ -23,11 +23,6 @@ const QrScanner = dynamic(() => import("@/app/components/QrScanner"), {
   loading: () => <p>Loading scanner...</p>,
 });
 
-const SCAN_TYPE = {
-  UNIVERSITY: "university",
-  GENERAL: "general",
-};
-
 export default function ScanPage() {
   const [scanResult, setScanResult] = useState(null);
   const [scanStatus, setScanStatus] = useState("idle");
@@ -35,32 +30,58 @@ export default function ScanPage() {
 
   const { user, isUserLoading } = useUser();
 
-  console.log(user)
-  const { data: location, loading: isGeoLoading } = useGeo();
+  console.log(user);
+  const { data: location } = useGeo();
   const { mutate: registerGeneral, isPending: isRegisteringGeneral } =
     useRegisterGeneralAttendee();
 
   const { sessionByQr, isSessionByQrLoading } = useAttendanceSessionByQr(
     scanResult && !scanResult.includes("/scan/") ? scanResult : null,
   );
+
   const {
     data: existingRecord,
     isGetAtdRecordLoading,
     isFetched: isRecordFetched,
   } = useGetAtdRecord(user && sessionByQr ? sessionByQr?.id : null, user?.id);
+
   const { setAtdRecord, issetAtdRecordLoading } = useSetAtdRecord();
 
   // University flow effect
   useEffect(() => {
-    if (!scanResult || scanResult.includes("/scan/")) return;
-    if (!sessionByQr || !isRecordFetched || scanStatus !== "idle") return;
+    const isGeneralScan = scanResult?.includes("/scan/");
 
+    // Only process if we have a scan, it's NOT a general scan, and we're actively loading
+    if (!scanResult || isGeneralScan || scanStatus !== "loading") return;
+
+    // 1. Wait for the QR session data to finish fetching
+    if (isSessionByQrLoading) return;
+
+    // 2. Validate QR Code (Ensure it's actually an attendance session)
+    if (!sessionByQr) {
+      setScanStatus("error");
+      setErrorMessage("Invalid class QR code. Session not found.");
+      return;
+    }
+
+    // 3. Validate Time Window (Reject if class hasn't started or has ended)
+    if (sessionByQr.isActivatedFrmQr === false) {
+      setScanStatus("error");
+      setErrorMessage("Attendance window is not active yet or has closed.");
+      return;
+    }
+
+    // 4. Wait for the user's past attendance records to load
+    if (isGetAtdRecordLoading || !isRecordFetched) return;
+
+    // 5. Prevent Duplicate Check-ins
     if (existingRecord) {
       setScanStatus("error");
       setErrorMessage("Attendance already marked!");
       return;
     }
 
+    // 6. Ensure GPS Location Exists
     if (!location) {
       setScanStatus("error");
       setErrorMessage(
@@ -70,7 +91,7 @@ export default function ScanPage() {
       return;
     }
 
-    setScanStatus("loading");
+    // 7. Everything passes securely -> Submit the record
     setAtdRecord(
       {
         sessionId: sessionByQr.id,
@@ -88,6 +109,8 @@ export default function ScanPage() {
   }, [
     scanResult,
     sessionByQr,
+    isSessionByQrLoading,
+    isGetAtdRecordLoading,
     isRecordFetched,
     existingRecord,
     location,
@@ -110,8 +133,7 @@ export default function ScanPage() {
         isGeneralEvent = true;
         eventId = pathParts[2];
       }
-    } catch (error) {
-    }
+    } catch (error) {}
 
     if (isGeneralEvent) {
       setScanStatus("loading");
@@ -151,6 +173,9 @@ export default function ScanPage() {
         setScanStatus("error");
         setErrorMessage(error.message || "An unexpected error occurred.");
       }
+    } else {
+      // Fix: Trigger the UI loading state immediately for University Events
+      setScanStatus("loading");
     }
   }
 
@@ -160,7 +185,13 @@ export default function ScanPage() {
     setErrorMessage("");
   }
 
-  if (isUserLoading) return <FullLoader />;
+  if (isUserLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <FullLoader />
+      </div>
+    );
+  }
 
   const isGeneralScan = scanResult?.includes("/scan/");
 
