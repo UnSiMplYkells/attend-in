@@ -16,7 +16,7 @@ export default function Authenticate() {
     <div className="relative w-full h-screen flex items-center justify-center ">
       <AuthForm pathname={pathname} />
       <PixelBlast
-        className="absolute inset-0 z-0 "
+        className="absolute inset-0 z-0 hidden md:block"
         variant="square"
         pixelSize={6}
         color="#e6b469"

@@ -1,4 +1,5 @@
 "use server";
+
 import { createClient } from "@/app/utils/supabase/server";
 
 export async function setAtdSession({
@@ -33,7 +34,6 @@ export async function setAtdSession({
 export async function getActiveAtdSession({ classIds, timeNow, nowNow }) {
   if (!classIds || classIds.length === 0) return null;
   const supabase = await createClient();
-
   const ids = Array.isArray(classIds) ? classIds : [classIds];
 
   //gets the start of today in YYYY-MM-DDT00:00:00
@@ -68,7 +68,11 @@ export async function getActiveAtdSession({ classIds, timeNow, nowNow }) {
   };
 }
 
-export async function getAttendanceSessionByQr(qrData, nowISO, today) {
+export async function getAttendanceSessionByQr(
+  qrData,
+  clientNowISO,
+  clientToday,
+) {
   const supabase = await createClient();
 
   const { data: sessionByQr, error } = await supabase
@@ -78,13 +82,16 @@ export async function getAttendanceSessionByQr(qrData, nowISO, today) {
     .single();
 
   if (error) throw error;
-
   if (!sessionByQr) return null;
 
+  // FIX: Generate the absolute time strictly on the server
+  // We ignore clientNowISO and clientToday to prevent timezone mismatches and student phone manipulation
+  const serverNowISO = new Date().toISOString();
+
+  // Validate strictly based on the absolute server time falling within the window
   const isActivatedFrmQr =
-    nowISO >= sessionByQr?.window_start &&
-    nowISO <= sessionByQr?.window_end &&
-    sessionByQr?.session_date === today;
+    serverNowISO >= sessionByQr?.window_start &&
+    serverNowISO <= sessionByQr?.window_end;
 
   return {
     ...sessionByQr,
@@ -98,14 +105,16 @@ export async function getSessionsByClassId(classId) {
 
   const { data: historicalSession, error } = await supabase
     .from("attendance_sessions")
-    .select("window_start, id, attendance_records!id(session_id, distance_frm_hall, users!student_id(full_name, matric_number))")
+    .select(
+      "window_start, id, attendance_records!id(session_id, distance_frm_hall, users!student_id(full_name, matric_number))",
+    )
     .eq("class_id", classId);
-  
+
   if (error) {
     throw new Error(error.message || "Failed to get attendance session");
   }
 
   return {
-    historicalSession
+    historicalSession,
   };
 }

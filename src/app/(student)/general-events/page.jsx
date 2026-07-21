@@ -143,7 +143,7 @@ function HistoryList({ records }) {
     <div className="mt-12">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full bg-white/5 p-4 rounded-xl text-white font-bold flex justify-between items-center"
+        className="w-full bg-white/5 p-4 rounded-xl text-white font-bold flex justify-between items-center cursor-pointer  transition-transform duration-200 hover:scale-101"
       >
         <span>View All General Records</span>
         <MdArrowForward

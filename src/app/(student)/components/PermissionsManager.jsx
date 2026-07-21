@@ -112,7 +112,7 @@ export default function PermissionsManager() {
       {!isDenied && (
         <button
           onClick={handleEnableClicks}
-          className="bg-white text-indigo-600 px-4 py-2.5 rounded-lg text-sm font-bold shadow-sm hover:bg-indigo-50 transition-colors w-full mt-1"
+          className="bg-white text-indigo-600 px-4 py-2.5 rounded-lg text-sm font-bold shadow-sm hover:bg-indigo-50 transition-colors cursor-pointer w-full mt-1"
         >
           Enable Permissions
         </button>

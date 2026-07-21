@@ -19,6 +19,10 @@ export async function requireRole() {
   const supabase = await createClient();
   const user = await getCurrentUser();
 
+  if (!user) {
+    redirect("/login?error=auth_required");
+  }
+
   const { data: dbUser } = await supabase
     .from("users")
     .select("role")

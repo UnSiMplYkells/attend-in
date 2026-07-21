@@ -8,13 +8,10 @@ export default function NameComp({
   isDrawerOpen,
   profileHref = "/profile",
 }) {
-  // IMPORTANT: Ensure this matches what your hook actually returns!
-  // If your hook returns 'user' instead of 'data', change this back to:
-  // const { user, isUserLoading } = useUser() || {};
-  const { user, isLoading: isUserLoading } = useUser() || {};
+  const { user, isUserLoading } = useUser() || {};
   
   const name = user?.profileII?.full_name?.trim() || "";
-  const role = user?.profileII?.role || "Member"; // Fallback if no role exists
+  const role = user?.profileII?.role || "Flr. Member";
 
   const parts = name.split(/\s+/).filter(Boolean);
 
@@ -40,7 +37,6 @@ export default function NameComp({
             isDrawerOpen ? "justify-start" : "justify-center"
           } flex items-center sm:justify-start gap-3 overflow-hidden cursor-pointer`}
         >
-          {/* Avatar Area */}
           {isUserLoading ? (
             <Skeleton circle width={40} height={40} />
           ) : (
@@ -53,13 +49,11 @@ export default function NameComp({
             </div>
           )}
 
-          {/* Text Area */}
           <div
             className={`flex flex-col transition-all duration-300 ${
               collapsedOnMobile ? "hidden sm:flex" : "flex"
             }`}
           >
-            {/* TIE SKELETONS TO isUserLoading, NOT TO TRUTHINESS OF NAME/ROLE */}
             {isUserLoading ? (
               <>
                 <Skeleton width={140} />
@@ -70,7 +64,7 @@ export default function NameComp({
                 <span className="text-sm font-semibold text-theme truncate max-w-[150px]">
                   {parts.length >= 2 
                     ? `${lastName} ${lastInitial}.` 
-                    : name || "Unknown User"}
+                    : name || "John Jane Doe"}
                 </span>
                 <span className="text-xs text-muted-theme truncate">
                   {role}

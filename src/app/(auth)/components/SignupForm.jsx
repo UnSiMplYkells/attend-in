@@ -15,7 +15,7 @@ export default function SignupForm() {
   const { signup, isSignupLoading } = useSignup();
   const { classRepSignup, isClassRepSignupLoading } = useClassRepSignup();
   const [open, setOpen] = useState(false);
-  const [userType, setUserType] = useState("general_user");
+  const [userType, setUserType] = useState("student");
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");

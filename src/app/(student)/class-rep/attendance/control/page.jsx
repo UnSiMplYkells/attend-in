@@ -1,3 +1,4 @@
+
 "use client"
 import { useEffect, useState } from "react"
 import { useGeo } from "@/hooks/useGeo";
@@ -91,7 +92,6 @@ export default function page() {
 
   if (isClassesLoading) return <FullLoader />;
 
-  //live Session View
   if (attendanceStarted && qrData) {
     return (
       <div className="flex flex-col items-center justify-center h-full min-h-[80vh] p-6 text-center animate-in fade-in zoom-in duration-300">
@@ -131,7 +131,6 @@ export default function page() {
     );
   }
 
-  //Dashboard View
   return (
     <div className="p-6 lg:p-10 max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4">
@@ -199,14 +198,20 @@ export default function page() {
                   <span
                     className={`px-2 py-2 rounded text-[10px] leading-none font-bold uppercase tracking-wider border
                       ${
-                        isActive
+                        isActive && activeAtdSession?.class_id !== cls.id
                           ? "bg-green-500/10 text-green-400 border-green-500/20"
+                          : isActive && activeAtdSession?.class_id === cls.id
+                          ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/20"
                           : "bg-gray-500/10 text-gray-400 border-gray-500/20"
                       }`}
                   >
-                    {isActive ? "Scheduled Now" : "Inactive"}
+                    {isActive && activeAtdSession?.class_id === cls.id
+                      ? "Active Now"
+                      : isActive
+                      ? "Scheduled Now"
+                      : "Inactive"}
                   </span>
-                  {isAtdActivated && (
+                  {isAtdActivated && activeAtdSession?.class_id === cls.id && (
                     <span className="flex items-center gap-1 text-red-400 text-xs font-bold animate-pulse">
                       <HiOutlineStatusOnline /> LIVE
                     </span>
@@ -230,20 +235,33 @@ export default function page() {
               </div>
 
               <div className="pt-4 border-t border-white/5">
-                {isActive && !attendanceStarted ? (
+                {isActive ? (
                   <Button
                     variant="primary"
-                    onClick={() => handleStartAttendance(cls)}
-                    disabled={issetAtdSessionLoading || activeAtdSession}
+                    onClick={
+                      activeAtdSession?.class_id === cls.id
+                        ? () => setAttendanceStarted(true)
+                        : () => handleStartAttendance(cls)
+                    }
+                    disabled={
+                      issetAtdSessionLoading ||
+                      (activeAtdSession && activeAtdSession?.class_id !== cls.id)
+                    }
                   >
-                    {issetAtdSessionLoading ? <Loader /> : ( activeAtdSession ? "View QR Code" : "Start Session")}
+                    {issetAtdSessionLoading ? (
+                      <Loader />
+                    ) : activeAtdSession?.class_id === cls.id ? (
+                      "View QR Code"
+                    ) : (
+                      "Start Session"
+                    )}
                   </Button>
                 ) : (
                   <button
                     disabled
                     className="w-full py-3 rounded-md text-sm font-semibold bg-white/5 text-gray-500 cursor-not-allowed border border-white/5"
                   >
-                    {isAtdActivated
+                    {activeAtdSession
                       ? "Session running elsewhere"
                       : "No Class Scheduled"}
                   </button>

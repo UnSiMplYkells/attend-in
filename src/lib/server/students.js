@@ -1,7 +1,12 @@
 "use server"
 import { createClient } from "@/app/utils/supabase/server";
 
-export async function getStudents(department, page = 1, searchTerm = "") {
+export async function getStudents(
+  department,
+  page = 1,
+  searchTerm = "",
+  admissionSessionYear,
+) {
   const supabase = await createClient();
 
   const ITEMS_PER_PAGE = 35;
@@ -12,9 +17,13 @@ export async function getStudents(department, page = 1, searchTerm = "") {
   let query = supabase
     .from("users")
     .select("*, students_registry!inner(department)", { count: "exact" })
-    // .eq("students_registry.department", department) //filters by department
+    .eq("students_registry.department", department) //filters by department
     .order("full_name", { ascending: true })
     .range(from, to);
+
+  if (admissionSessionYear) {
+    query = query.eq("admission_session_year", admissionSessionYear);
+  }
 
   //applys the search filter if needed
   if (searchTerm) {
@@ -52,13 +61,19 @@ export async function checkUserExists(matricNo) {
 }
 
 //for the downlaod funciton of class list bypassing pagination
-export async function getStudentsByDept(department) {
+export async function getStudentsByDept(department, admissionSessionYear) {
   const supabase = await createClient();
 
-  const { data, error } = await supabase
+  let query = supabase
     .from("users")
-    .select("*, students_registry!inner(department)");
-    // .eq("students_registry.department", department) //filters by department
+    .select("*, students_registry!inner(department)")
+    .eq("students_registry.department", department); //filters by department
+
+  if (admissionSessionYear) {
+    query = query.eq("admission_session_year", admissionSessionYear);
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     console.error(error);

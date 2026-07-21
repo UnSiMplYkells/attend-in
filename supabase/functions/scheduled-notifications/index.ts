@@ -54,7 +54,7 @@ Deno.serve(async (req) => {
 
       let title = "";
       let body = "";
-      let link = "http://localhost:3000/attendance/scan"; // Changed to full URL for background clicks
+      let link = "https://atttendin.netlify.app/attendance/scan"; // Changed to full URL for background clicks
       let targetTokens: string[] = [];
 
       // Rule 2: Window Started
@@ -127,8 +127,8 @@ Deno.serve(async (req) => {
                     title: title,
                     body: body,
                     icon: dynamicIconUrl,
-                    link: link === "http://localhost:3000/attendance/scan" 
-                          ? "https://carbon-retro-bent-twelve.trycloudflare.com/attendance/scan" 
+                    link: link === "https://atttendin.netlify.app/attendance/scan" 
+                          ? "https://atttendin.netlify.app/attendance/scan" 
                           : link // Update default link to your new Cloudflare URL
                   } 
                 }

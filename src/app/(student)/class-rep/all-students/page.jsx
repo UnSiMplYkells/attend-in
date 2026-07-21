@@ -24,6 +24,7 @@ import highlightText from "@/app/helper/searchHighlight";
 export default function StudentsPage() {
   const { user, isAuthenticated, isLoading: isUserLoading } = useUser();
   const classRepDept = user?.profile?.department;
+  const admissionSessionYear = user?.profileII?.admission_session_year;
 
   const [open, setOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
@@ -32,13 +33,19 @@ export default function StudentsPage() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
-  const itemsPerPage = 20;
+  const itemsPerPage = 35;
 
-  const { students, count, isStudentsLoading, isPlaceholderData } =
-    useGetStudents(classRepDept, currentPage, debouncedSearchTerm);
+  const { students, count, isStudentsLoading, isPlaceholderData } = useGetStudents(
+    classRepDept,
+    currentPage,
+    debouncedSearchTerm,
+    admissionSessionYear,
+  );
 
-  const { allDeptStudents, isAllDeptStudentsLoading } =
-    useGetStudentsByDept(classRepDept);
+  const { allDeptStudents, isAllDeptStudentsLoading } = useGetStudentsByDept(
+    classRepDept,
+    admissionSessionYear,
+  );
 
   useEffect(() => {
     setCurrentPage(1);
@@ -133,14 +140,16 @@ export default function StudentsPage() {
             </div>
 
             <div className="hidden lg:flex items-center gap-3">
-              <button
+              <Button
                 onClick={handleExportExcel}
                 disabled={isAllDeptStudentsLoading}
-                className="inline-flex items-center gap-2 rounded-sm border border-white/10 bg-white/5 px-3 py-2 text-sm font-medium text-white hover:bg-white/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                width="w-fit"
+                padding="px-3 py-2"
+                variant="secondary"
               >
                 <FiDownload className="size-4" />
                 {isAllDeptStudentsLoading ? "Loading List..." : "Export List"}
-              </button>
+              </Button>
               <Button width="w-fit" padding="px-3 py-2" variant="primary">
                 + Add Student
               </Button>

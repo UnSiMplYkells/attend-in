@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
+import { createServerClient } from "@supabase/ssr";
 
 const ratelimit = new Ratelimit({
   redis: Redis.fromEnv(),
@@ -9,18 +10,16 @@ const ratelimit = new Ratelimit({
 });
 
 export async function middleware(request) {
+
   if (
     request.nextUrl.pathname.startsWith("/api") ||
     request.method === "POST"
   ) {
-
     const ip = request.ip ?? "127.0.0.1";
 
-    const { success, pending, limit, reset, remaining } =
-      await ratelimit.limit(ip);
+    const { success, limit, reset, remaining } = await ratelimit.limit(ip);
 
     if (!success) {
-      // If they hit the limit, block the request and return a 429 status
       return NextResponse.json(
         { error: "Too many requests. Please slow down." },
         {
@@ -35,69 +34,45 @@ export async function middleware(request) {
     }
   }
 
-  // If safe, continue to the requested route
-  return NextResponse.next();
+  let response = NextResponse.next({
+    request: {
+      headers: request.headers,
+    },
+  });
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) =>
+            request.cookies.set(name, value),
+          );
+
+          response = NextResponse.next({
+            request: {
+              headers: request.headers,
+            },
+          });
+          cookiesToSet.forEach(({ name, value, options }) =>
+            response.cookies.set(name, value, options),
+          );
+        },
+      },
+    },
+  );
+
+  await supabase.auth.getUser();
+
+  return response;
 }
 
-// Specify which paths the middleware should run on
 export const config = {
   matcher: [
     "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };
-
-
-// import { NextResponse } from "next/server";
-// import { Ratelimit } from "@upstash/ratelimit";
-// import { Redis } from "@upstash/redis";
-
-// const redis = Redis.fromEnv();
-
-// // Limit 1: Stops rapid-fire button mashing
-// const burstLimiter = new Ratelimit({
-//   redis: redis,
-//   limiter: Ratelimit.slidingWindow(8, "10 s"),
-//   prefix: "@upstash/burst",
-// });
-
-// // Limit 2: Stops "low and slow" scripts over a 24-hour period
-// const dailyLimiter = new Ratelimit({
-//   redis: redis,
-//   limiter: Ratelimit.slidingWindow(30, "1 d"), // Max 30 requests per day
-//   prefix: "@upstash/daily",
-// });
-
-// export async function middleware(request) {
-//   if (
-//     request.nextUrl.pathname.startsWith("/api") ||
-//     request.method === "POST"
-//   ) {
-//     const ip = request.ip ?? "127.0.0.1";
-
-//     // 1. Check the Burst Limit first (cheaper and faster)
-//     const burst = await burstLimiter.limit(ip);
-//     if (!burst.success) {
-//       return NextResponse.json(
-//         { error: "Too many requests. Please slow down." },
-//         { status: 429 },
-//       );
-//     }
-
-//     // 2. Check the Daily Limit
-//     const daily = await dailyLimiter.limit(ip);
-//     if (!daily.success) {
-//       return NextResponse.json(
-//         { error: "Daily action limit reached. Try again tomorrow." },
-//         { status: 429 },
-//       );
-//     }
-//   }
-
-//   return NextResponse.next();
-// }
-
-// export const config = {
-//   matcher: [
-//     "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
-//   ],
-// };

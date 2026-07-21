@@ -128,12 +128,12 @@ export default function AuthModal({ open, setOpen, onConfirmStudent, onConfirmCl
                       onChange={(e) => setLevel(Number(e.target.value))}
                       className="block w-full rounded-md border border-transparent bg-white/5 py-2 px-3 text-white shadow-sm focus:border-green-500 focus:outline-none sm:text-md sm:leading-6"
                     >
-                      <option value={100}>100L</option>
-                      <option value={200}>200L</option>
-                      <option value={300}>300L</option>
-                      <option value={400}>400L</option>
-                      <option value={500}>500L</option>
-                      <option value={600}>600L</option>
+                      <option value={100} className="bg-gray-900 text-white">100L</option>
+                      <option value={200} className="bg-gray-900 text-white">200L</option>
+                      <option value={300} className="bg-gray-900 text-white">300L</option>
+                      <option value={400} className="bg-gray-900 text-white">400L</option>
+                      <option value={500} className="bg-gray-900 text-white">500L</option>
+                      <option value={600} className="bg-gray-900 text-white">600L</option>
                     </select>
                   </div>
                 </div>
@@ -158,13 +158,17 @@ export default function AuthModal({ open, setOpen, onConfirmStudent, onConfirmCl
                 <div className="flex justify-center gap-10">
                   <Button
                     variant="primary"
-                    onClick={() => {onConfirmStudent()}}
+                    onClick={() => {
+                      onConfirmStudent();
+                    }}
                   >
                     Student
                   </Button>
                   <Button
                     variant="danger"
-                    onClick={() => {setClassRepFormVisible(true)}}
+                    onClick={() => {
+                      setClassRepFormVisible(true);
+                    }}
                   >
                     Class Rep
                   </Button>

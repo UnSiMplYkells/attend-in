@@ -7,8 +7,10 @@ import {
   signInWithEmail,
   signUpNewUser as signUpNewUserApi,
   signUpClassRep,
+  createClassRepInvite,
+  getActiveInvites,
 } from "@/lib/server/auth";
-import { useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
@@ -105,9 +107,19 @@ export function useClassRepSignup() {
   const router = useRouter();
   const { mutate: classRepSignup, isPending: isClassRepSignupLoading } =
     useMutation({
-      mutationFn: (formData) => signUpClassRep(formData),
-      onSuccess: () => {
+      mutationFn: async (formData) => {
+        // 1. Generate the fingerprint first
+        const { uuid, deviceId } = await createDeviceFingerprint();
+        localStorage.setItem("device_uuid", uuid);
+
+        // 2. Attach it to formData before sending to the server action
+        return signUpClassRep({ ...formData, deviceFingerprint: deviceId });
+      },
+      onSuccess: (data) => {
         toast.success("Class Rep account created! Please log in.");
+        if (data?.deviceFingerprint) {
+          localStorage.setItem("device_id", data.deviceFingerprint);
+        }
         router.push("/login");
       },
       onError: (error) => {
@@ -116,4 +128,26 @@ export function useClassRepSignup() {
     });
 
   return { classRepSignup, isClassRepSignupLoading };
+}
+
+export function useGetActiveInvites() {
+  return useQuery({
+    queryKey: ["activeInvites"],
+    queryFn: () => getActiveInvites(),
+    refetchInterval: 5000,
+  });
+}
+
+export function useCreateClassRepInvite() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (matricNo) => createClassRepInvite(matricNo),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["activeInvites"] });
+      toast.success("Invite created successfully!");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to create invite.");
+    },
+  });
 }
