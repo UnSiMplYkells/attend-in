@@ -49,3 +49,4 @@ certificates
 .vscode
 .clineignore
 DEVELOPMENT_DOCUMENTATION.md
+/supabase/migrations/
