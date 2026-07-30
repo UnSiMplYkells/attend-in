@@ -1,36 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# attend•in
 
-## Getting Started
+Attend•in is a modern, responsive, and robust student attendance tracking application built with Next.js and Tailwind CSS. It leverages a secure serverless backend powered by Supabase, high-performance API rate limiting through Upstash Redis, and real-time push notifications using Firebase Cloud Messaging (FCM).
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Role-Based Access Control**: Separate dashboards and functionalities for Students, Class Representatives, and Administrators.
+- **Real-time Attendance Tracking**: Lecturers and Class Reps can initiate attendance sessions, and students can mark their presence in real-time.
+- **QR Code Generation & Scanning**: Generate unique QR codes for attendance sessions and scan them using the built-in QR code scanner.
+- **GPS Geofencing**: Ensures students can only mark their attendance when they are within a specified range of the classroom, using the Haversine formula for accurate distance calculation.
+- **Device Fingerprinting**: Prevents cheating by creating a unique fingerprint for each student's device.
+- **Push Notifications**: Real-time notifications for important events, powered by Firebase Cloud Messaging.
+- **Data Visualization**: Interactive charts and graphs to visualize attendance data, built with Recharts.
+- **Bulk Data Upload**: Administrators can upload student and course data in bulk using Excel/CSV files.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tech Stack
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+| Category          | Technology                                                                                             | Description                                                                                                                                |
+| ----------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Framework**         | [Next.js](https://nextjs.org/) 14+                                                                       | A React framework for building full-stack web applications with the App Router.                                                          |
+| **Styling**           | [Tailwind CSS](https://tailwindcss.com/) v4                                                            | A utility-first CSS framework for rapidly building custom user interfaces.                                                               |
+| **Database & Auth** | [Supabase](https://supabase.io/)                                                                       | An open-source Firebase alternative providing a PostgreSQL database, authentication, and instant APIs.                                     |
+| **Rate Limiting**     | [Upstash Redis](https://upstash.com/redis)                                                             | A serverless Redis provider used for implementing robust API rate limiting.                                                              |
+| **Notifications**     | [Firebase Cloud Messaging (FCM)](https://firebase.google.com/docs/cloud-messaging)                   | A cross-platform messaging solution for sending real-time push notifications.                                                            |
+| **State Management**  | [Zustand](https://github.com/pmndrs/zustand)                                                           | A small, fast, and scalable state management solution for React.                                                                         |
+| **Data Fetching**     | [TanStack Query](https://tanstack.com/query/v5)                                                        | A powerful data-fetching and caching library for React.                                                                                  |
+| **UI & Animation**    | [Framer Motion](https://www.framer.com/motion/), [Recharts](https://recharts.org/), [Three.js](https://threejs.org/) | Libraries for creating fluid animations, interactive charts, and 3D graphics.                                                              |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Prerequisites
 
-## Learn More
+- **Node.js**: `v18.17.0` or `v20.x`
+- **Package Manager**: `npm`
 
-To learn more about Next.js, take a look at the following resources:
+## Installation & Setup
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1.  **Clone the repository:**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+    ```bash
+    git clone https://github.com/UnSiMplYkells/attend-in.git
+    cd attend-in
+    ```
 
-## Deploy on Vercel
+2.  **Install dependencies:**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+    ```bash
+    npm install
+    ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3.  **Set up environment variables:**
+
+    Create a `.env` file in the root of the project by copying the `.env.example` file. Then, fill in the required environment variables.
+
+    ```bash
+    cp .env.example .env
+    ```
+
+    You will need to add your credentials for:
+    - Supabase (URL and Public Key)
+    - Firebase (Web app configuration and FCM VAPID key)
+    - Upstash Redis (REST URL and Token)
+
+
+## Usage
+
+- **Run the development server:**
+
+  ```bash
+  npm run dev
+  ```
+
+- **Build for production:**
+
+  ```bash
+  npm run build
+  ```
+
+- **Start the production server:**
+
+  ```bash
+  npm run start
+  ```
+
+- **Lint the code:**
+
+  ```bash
+  npm run lint
+  ```
